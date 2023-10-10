@@ -118,10 +118,10 @@ router.post('/register_product_details', authenticateToken, async (req, res) => 
         pay_now_delivery
     } = req.body;
 
-    if (id_product == '' || price === '' || brand == '' || model.trim() === '' || year === '' || condition.trim() === '' || mileage == '' || engine_number == '' || warranty.trim() === '' || owner.trim() === '' || delivery.trim() === '' || pay_now_delivery.trim() === '') {
+    /*if (id_product == '' || price === '' || brand == '' || model.trim() === '' || year === '' || condition.trim() === '' || mileage == '' || engine_number == '' || warranty.trim() === '' || owner.trim() === '' || delivery.trim() === '' || pay_now_delivery.trim() === '') {
         flag = true;
         response.msg = 'Campos vacíos';
-    }
+    }*/
 
     if (! flag) {
         let result_up,
