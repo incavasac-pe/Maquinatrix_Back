@@ -8,7 +8,10 @@ class CatalogoControllers {
             const results = await Category.findAll({
                 where: {
                     status_id: 1
-                }
+                }, 
+                 order: [
+                    ['id_category', 'ASC']
+                ]
             });
             return results;
         } catch (error) {

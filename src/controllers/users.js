@@ -16,6 +16,7 @@ class UserControllers {
         let response
         try {
             const hashedPassword = crypto.createHash('md5').update(password).digest('hex');
+            console.log("passs",hashedPassword)
             const results = await Users.findAll({
                 attributes: [
                     'id_user',
