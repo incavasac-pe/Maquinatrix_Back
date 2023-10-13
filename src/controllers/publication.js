@@ -55,7 +55,7 @@ class PubControllers {
         }
     }
 
-    async registerPubDetails(id_product, price, brand, model, year, condition, mileage, engine_number, warranty, owner, delivery, pay_now_delivery) {
+    async registerPubDetails(id_product, price, brand, model, year, condition, mileage, engine_number, warranty, owner, delivery, pay_now_delivery,facipay,contact_me) {
         try {
             const result = await ProductDetails.create({
                 id_product: id_product,
@@ -69,7 +69,9 @@ class PubControllers {
                 warranty: warranty,
                 owner: owner,
                 delivery: delivery,
-                pay_now_delivery: pay_now_delivery
+                pay_now_delivery: pay_now_delivery,
+                facipay: facipay,
+                contact_me: contact_me
             });
 
             return result.id_product_details;
@@ -155,12 +157,18 @@ class PubControllers {
                     [Op.ne]: 8
                 }
             };
-
             if (search) {
+              whereClause[Op.or] = [
+                { title: { [Op.iLike]: `%${search}%` } },
+                { location: { [Op.iLike]: `%${search}%` } }
+              ];
+            }
+
+            /*if (search) {
                 whereClause.title = {
                     [Op.iLike]: `%${search}%`
                 };
-            }
+            }*/
 
             if (tpublicacion) {
                 whereClause.id_publication_type = tpublicacion;
@@ -313,7 +321,7 @@ class PubControllers {
         }
     }
 
-    async updatePublicationDetail(id_product, price, brand, model, year, condition, mileage, engine_number, warranty, owner, delivery, pay_now_delivery) {
+    async updatePublicationDetail(id_product, price, brand, model, year, condition, mileage, engine_number, warranty, owner, delivery, pay_now_delivery,facipay,contact_me) {
         let response;
         try {
             const result = await ProductDetails.update({
@@ -327,7 +335,9 @@ class PubControllers {
                 warranty: warranty,
                 owner: owner,
                 delivery: delivery,
-                pay_now_delivery: pay_now_delivery
+                pay_now_delivery: pay_now_delivery,
+                facipay: facipay,
+                contact_me: contact_me
             }, {
                 where: {
                     id_product: id_product

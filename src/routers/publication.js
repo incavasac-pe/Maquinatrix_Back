@@ -115,13 +115,15 @@ router.post('/register_product_details', authenticateToken, async (req, res) => 
         warranty,
         owner,
         delivery,
-        pay_now_delivery
+        pay_now_delivery,
+        facipay,
+        contact_me
     } = req.body;
 
-    if (id_product == '' || price === '' || brand == '' || model.trim() === '' || year === '' || condition.trim() === '' || mileage == '' || engine_number == '' || warranty.trim() === '' || owner.trim() === '' || delivery.trim() === '' || pay_now_delivery.trim() === '') {
+    /*if (id_product == '' || price === '' || brand == '' || model.trim() === '' || year === '' || condition.trim() === '' || mileage == '' || engine_number == '' || warranty.trim() === '' || owner.trim() === '' || delivery.trim() === '' || pay_now_delivery.trim() === '') {
         flag = true;
         response.msg = 'Campos vacíos';
-    }
+    }*/
 
     if (! flag) {
         let result_up,
@@ -129,9 +131,9 @@ router.post('/register_product_details', authenticateToken, async (req, res) => 
 
         exist = await new PubControllers().getPublicationsDetails(id_product);
         if (exist.length > 0) {
-            result_up = await new PubControllers().updatePublicationDetail(id_product, price, brand, model, year, condition, mileage, engine_number, warranty, owner, delivery, pay_now_delivery);
+            result_up = await new PubControllers().updatePublicationDetail(id_product, price, brand, model, year, condition, mileage, engine_number, warranty, owner, delivery, pay_now_delivery,facipay,contact_me);
         } else {
-            result_inser = await new PubControllers().registerPubDetails(id_product, price, brand, model, year, condition, mileage, engine_number, warranty, owner, delivery, pay_now_delivery);
+            result_inser = await new PubControllers().registerPubDetails(id_product, price, brand, model, year, condition, mileage, engine_number, warranty, owner, delivery, pay_now_delivery,facipay,contact_me);
         }
 
         if (result_inser != undefined || result_up == 1) {

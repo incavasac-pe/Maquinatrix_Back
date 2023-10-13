@@ -31,6 +31,7 @@ router.post('/login_account', async (req, res) => {
     }
     if (! flag) {
         exist = await new UserControllers().validateCredencials(email, password);
+        console.log("asdasd",exist)
         if (exist.length == 0) {
             bandera = true;
             response.msg = `Credenciales inválidas`;

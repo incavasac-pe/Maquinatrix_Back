@@ -58,7 +58,15 @@ const ProductDetails = sequelize.define('ProductDetails', {
     pay_now_delivery: {
         type: DataTypes.CHAR(1),
         allowNull: false
-    }
+    },
+    facipay: {
+        type: DataTypes.CHAR(1),
+        allowNull: false
+    },
+     contact_me: {
+        type: DataTypes.TEXT,
+        allowNull: true
+    },
 }, {
     tableName: 'product_details',
     timestamps: false
