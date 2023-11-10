@@ -3,7 +3,7 @@ require('dotenv').config();
 
 class EmailSender {
   constructor() {
-    this.transporter = nodemailer.createTransport({
+  /*  this.transporter = nodemailer.createTransport({
       service:'gmail',
       auth : {
         type:'OAuth2',
@@ -13,7 +13,17 @@ class EmailSender {
         clientSecret : process.env.EMAIL_CLIENTSECRET,
         refreshToken : process.env.EMAIL_REFRESHTOKEN
       }    
-    });
+    });*/
+    this.transporter = nodemailer.createTransport({
+        host: process.env.EMAIL_HOST,
+        port: 587,
+        secure: false, // true si usas SSL/TLS,
+        requireTLS: true,
+        auth: {
+          user: process.env.EMAIL_ADDRESS,
+          pass: process.env.EMAIL_PASSWORD
+        }
+      });
   }
 
     sendEmail(to, subject, data, type) {
