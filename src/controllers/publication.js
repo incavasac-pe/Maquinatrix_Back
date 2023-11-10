@@ -1,206 +1,381 @@
-const db = require('../config/conexionDB.js')
+const Category = require('../models/Category');
+const PublicationType = require('../models/PublicationType');
+const Products = require('../models/Products');
+const ProductDetails = require('../models/ProductDetails');
+const ProductImages = require('../models/ProductImages');
+const {Op} = require('sequelize');
 
+Products.hasOne(ProductDetails, {
+    foreignKey: 'id_product',
+    as: 'product_details'
+});
+ProductDetails.belongsTo(Products, {
+    foreignKey: 'id_product',
+    as: 'product_details'
+});
+Products.belongsTo(PublicationType, {
+    foreignKey: 'id_publication_type',
+    as: 'publication_type'
+});
+PublicationType.hasMany(Products, {
+    foreignKey: 'id_publication_type',
+    as: 'publication_type'
+});
+Products.belongsTo(Category, {
+    foreignKey: 'id_category',
+    as: 'mainCategory'
+});
+Products.hasMany(ProductImages, {
+    foreignKey: 'id_product',
+    as: 'product_images'
+});
+
+ProductImages.belongsTo(Products, {
+    foreignKey: 'id_product',
+    as: 'product_images'
+});
 class PubControllers {
-    
-    async registerPub(title, id_publication_type, id_category, id_user) {       
-        let results = await db.query(`             
-        INSERT INTO maqdb.products (title, location, description, id_publication_type, id_category, create_at, status_id, id_user)
-             VALUES ($1, $2, $3, $4, $5, CURRENT_DATE, $6, $7)
-             RETURNING id_product`,
-         [title, '', '', id_publication_type, id_category, '6', id_user]).catch(console.log); 
-        return results ;
-    }
-    
-    async registerPubDetails(id_product, price, brand, model, year, condition, mileage, engine_number, warranty, owner, delivery, pay_now_delivery) {       
-        let results = await db.query(`             
-        INSERT INTO maqdb.product_details (id_product, price, brand, model, "year", "condition", mileage, engine_number, warranty, "owner", delivery, pay_now_delivery)
-             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
-             RETURNING id_product_details`,
-         [id_product, price, brand, model, year, condition, mileage, engine_number, warranty, owner, delivery, pay_now_delivery]).catch(console.log); 
-        return results ;
-    }
-     
-    async getPublicationsDetails(id) {   
-        let results = await db.query(`   
-        SELECT  * from maqdb.product_details pd  where id_product = ${id} `).catch(console.log); 
-        return results ;
+
+    async registerPub(title, id_publication_type, id_category, id_user) {
+        try {
+            const result = await Products.create({
+                title: title,
+                location: '',
+                description: '',
+                id_publication_type: id_publication_type,
+                id_category: id_category,
+                create_at: new Date(),
+                status_id: '6',
+                id_user: id_user
+            });
+
+            return result.id_product;
+        } catch (error) {
+            console.log(error);
+        }
     }
 
-    async getPublicationsPanel(search,tpublicacion,category,fcreacion)  {   
-        let sql = `       
-            SELECT p.id_product ,p.title ,  TO_CHAR(p.create_at, 'DD Mon YYYY, HH:MI am') AS create_at_formatted,
-            pt.type_pub, c.category
-            FROM maqdb.products p   
-            INNER JOIN maqdb.publication_type pt ON p.id_publication_type = pt.id_publication_type
-            INNER JOIN maqdb.category c ON p.id_category = c.id_category  
-            WHERE p.status_id <> 8` ;
-                
-            if (search !== '') {
-                sql += ` AND p.title ILIKE '%${search}%'`;
-            }        
-            if (tpublicacion !== '') {
-              sql += ` AND pt.id_publication_type = '${tpublicacion}'`;
-            }
-            if (category !== '') {
-              sql += ` AND c.id_category = '${category}'`;
-            }
-            if (fcreacion !== '') {
-             sql += ` AND p.create_at = '${fcreacion}'`;
-            }
-            
-         sql += ` ORDER BY  p.id_product;`;
-             
-        let results = await db.query(sql).catch(console.log); 
-        return results ;
-    }
-    
-    async getPublicationsPortal(search,tpublicacion,category,limit,price_max,price_min) {   
-        let sql = `    
-            select   
-            p.id_product,
-            p.title,
-            p.description,
-            p.location,
-            TO_CHAR(p.create_at, 'DD Mon YYYY, HH:MI am') AS create_at_formatted,
-            pt.type_pub,
-            c.category,
-            pi.image_name,
-            pd.*
-        FROM
-            maqdb.products p
-            LEFT JOIN maqdb.product_details pd ON pd.id_product = p.id_product
-            INNER JOIN maqdb.publication_type pt ON p.id_publication_type = pt.id_publication_type
-            INNER JOIN maqdb.category c ON p.id_category = c.id_category
-            LEFT JOIN (
-                SELECT id_product, image_name
-                FROM maqdb.product_images 
-                GROUP BY id_product, image_name limit 1
-            ) pi ON pi.id_product = p.id_product
-        WHERE
-            p.status_id <> 8` ;
-                
-            if (search !== '') {
-                sql += ` AND p.title ILIKE '%${search}%'`;
-            }        
-            if (tpublicacion !== '') {
-              sql += ` AND pt.id_publication_type = '${tpublicacion}'`;
-            }
-            if (category !== '') {
-              sql += ` AND c.id_category = '${category}'`;
-            }
-             if (price_max !== '') {
-              sql += `  ORDER BY  pd.price desc `;
-            }
-             if (price_min !== '') {
-              sql += `  ORDER BY  pd.price asc`;
-            }
-            if (price_max == '' && price_min == '' ) {
-                  sql += `  ORDER BY  p.id_product`;
-            }
-            
-         sql += ` LIMIT ${limit};`;            
-         
-        let results = await db.query(sql).catch(console.log); 
-        return results ;
-    }
-    async getPublicationsPanelDetails(id) {       
-        let results = await db.query(`     
-        SELECT
-        p.id_product,
-        p.title,p.description, p.location,
-        TO_CHAR(p.create_at, 'DD Mon YYYY, HH:MI am') AS create_at_formatted,
-        pt.type_pub,
-        c.category,
-        pd.*
-    FROM
-        maqdb.products p
-        LEFT JOIN maqdb.product_details pd ON pd.id_product = p.id_product
-        INNER JOIN maqdb.publication_type pt ON p.id_publication_type = pt.id_publication_type
-        INNER JOIN maqdb.category c ON p.id_category = c.id_category
-    WHERE
-        p.status_id <> 8
-        AND p.id_product = ${id}
-    ORDER BY
-        p.id_product;  `).catch(console.log); 
-        return results ;
-    }
-    
-    async getPublicationsDetailsImagen(id) {       
-        let results = await db.query(`     
-        SELECT  image_name  from maqdb.product_images pi2 where id_product = ${id} `).catch(console.log); 
-        return results ;
-    }
-    
-    async updatePublicationData(location,description, title,id_product) {
-        let response
+    async registerPubDetails(id_product, price, brand, model, year, condition, mileage, engine_number, warranty, owner, delivery, pay_now_delivery,facipay,contact_me) {
         try {
-            const query = ' UPDATE maqdb.products  SET location = $1,description= $2 ,title =$3 WHERE id_product = $4  RETURNING *';
-            const values = [location,description,title,id_product];
-            const result = await db.query(query, values);           
-            response = result
-       
-     } catch (err) { 
-        response = err;
-       }  
-       return response
+            const result = await ProductDetails.create({
+                id_product: id_product,
+                price: price,
+                brand: brand,
+                model: model,
+                year: year,
+                condition: condition,
+                mileage: mileage,
+                engine_number: engine_number,
+                warranty: warranty,
+                owner: owner,
+                delivery: delivery,
+                pay_now_delivery: pay_now_delivery,
+                facipay: facipay,
+                contact_me: contact_me
+            });
+
+            return result.id_product_details;
+        } catch (error) {
+            console.log(error);
+        }
     }
- 
+
+    async getPublicationsDetails(id) {
+        try {
+            const results = await ProductDetails.findAll({
+                where: {
+                    id_product: id
+                }
+            });
+
+            return results;
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    async getPublicationsPanel(search, tpublicacion, category, fcreacion) {
+        try {
+            const whereClause = {
+                status_id: {
+                    [Op.ne]: 8
+                }
+            };
+
+            if (search) {
+                whereClause.title = {
+                    [Op.iLike]: `%${search}%`
+                };
+            }
+
+            if (tpublicacion) {
+                whereClause['$PublicationType.id_publication_type$'] = tpublicacion;
+            }
+
+            if (category) {
+                whereClause['$Category.id_category$'] = category;
+            }
+
+            if (fcreacion) {
+                whereClause.create_at = fcreacion;
+            }
+
+            const results = await Products.findAll({
+                attributes: [
+                    'id_product',
+                    'title',
+                    'PublicationType.type_pub',
+                    'Category.category',
+                    [
+                        Products.sequelize.literal(`TO_CHAR(create_at, 'DD Mon YYYY, HH:MI am')`), 'create_at_formatted'
+                    ]
+                ],
+                include: [
+                    {
+                        model: PublicationType,
+                        attributes: ['type_pub']
+                    }, {
+                        model: Category,
+                        attributes: ['category']
+                    }
+                ],
+                where: whereClause,
+                order: [['id_product']]
+            });
+
+            return results;
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+
+    async getPublicationsPortal(search, tpublicacion, category, limit, price_max, price_min) {
+        try {
+            const whereClause = {
+                status_id: {
+                    [Op.ne]: 8
+                }
+            };
+            if (search) {
+              whereClause[Op.or] = [
+                { title: { [Op.iLike]: `%${search}%` } },
+                { location: { [Op.iLike]: `%${search}%` } }
+              ];
+            }
+
+            /*if (search) {
+                whereClause.title = {
+                    [Op.iLike]: `%${search}%`
+                };
+            }*/
+
+            if (tpublicacion) {
+                whereClause.id_publication_type = tpublicacion;
+            }
+
+            if (category) {
+                whereClause.id_category = category;
+            }
+
+            let orderClause = [['id_product']];
+
+
+            if (price_max) {
+                orderClause = [['product_details', 'price', 'ASC']];
+            } else if (price_min) {
+                orderClause = [['product_details', 'price', 'DESC']];
+            }
+
+            const results = await Products.findAll({
+                attributes: [
+                    'id_product',
+                    'title',
+                    'description',
+                    'location',
+                    [
+                        Products.sequelize.literal(`TO_CHAR(create_at, 'DD Mon YYYY, HH:MI am')`), 'create_at_formatted'
+                    ],
+                ],
+                include: [
+                    {
+                        model: ProductDetails,
+                        as: 'product_details',
+                        attributes: {
+                            exclude: ['id_product']
+                        }
+                    }, {
+                        model: PublicationType,
+                        attributes: ['type_pub']
+                    }, {
+                        model: Category,
+                        attributes: ['category']
+                    }, {
+                        model: ProductImages,
+                        as: 'product_images',
+                        attributes: ['image_name'],
+                        limit: 1
+
+                    }
+                ],
+                where: whereClause,
+                order: orderClause,
+                limit: limit
+            });
+
+            return results;
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    async getPublicationsPanelDetails(id) {
+        try {
+            const results = await Products.findAll({
+                where: {
+                    id_product: id,
+                    status_id: {
+                        [Op.ne]: 8
+                    }
+                },
+                attributes: [
+                    'id_product',
+                    'title',
+                    'description',
+                    'location',
+                    [
+                        Products.sequelize.fn('TO_CHAR', Products.sequelize.col('create_at'), 'DD Mon YYYY, HH:MI am'),
+                        'create_at_formatted'
+                    ]
+                ],
+                include: [
+                    {
+                        model: ProductDetails,
+                        as: 'product_details'
+                    }, {
+                        model: PublicationType,
+                        as: 'publication_type',
+                        attributes: ['type_pub']
+                    }, {
+                        model: Category,
+                        as: 'mainCategory'
+                    },
+                ],
+                order: [
+                    ['id_product', 'ASC']
+                ]
+            });
+
+            return results;
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    async getPublicationsDetailsImagen(id) {
+        try {
+            const results = await ProductImages.findAll({
+                where: {
+                    id_product: id
+                },
+                attributes: ['image_name']
+            });
+
+            return results;
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    async updatePublicationData(location, description, title, id_product) {
+        try {
+            const result = await Products.update({
+                location: location,
+                description: description,
+                title: title
+            }, {
+                where: {
+                    id_product: id_product
+                }
+            });
+
+            return result
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     async updatePublication(status, id_product) {
-        let response
         try {
-            const query = ' UPDATE maqdb.products  SET status_id = $1 WHERE id_product = $2  RETURNING *';
-            const values = [status,id_product];
-            const result = await db.query(query, values);           
-            response = result
-       
-     } catch (err) { 
-        response = err;
-       }  
-       return response
-    }
-    
-    async updatePublicationDetail(id_product, price, brand, model, year, condition, mileage, engine_number, warranty, owner, delivery, pay_now_delivery) {
-        let response
-        try {
-            const query = `  UPDATE maqdb.product_details
-			SET  price= $1, brand= $2, model= $3, "year"= $4, "condition"= $5, mileage= $6, 
-            engine_number= $7, warranty= $8, "owner"= $9, delivery= $10, pay_now_delivery= $11
-			WHERE id_product =  $12
-             RETURNING *`;
-            const values = [ price, brand, model, year, condition, mileage, engine_number, warranty, owner, delivery, pay_now_delivery,id_product];
-            const result = await db.query(query, values);           
-            response = result
-       
-     } catch (err) { 
-        response = err;
-       }  
-       return response
+            const result = await Products.update({
+                status_id: status
+            }, {
+                where: {
+                    id_product: id_product
+                }
+            });
+
+            return result
+        } catch (error) {
+            console.log(error);
+        }
     }
 
-    async registerImage( image_name,id_product ) {       
-        let results = await db.query(`             
-         INSERT INTO maqdb.product_images (id_product, image_name,  creation_date)
-            VALUES ($1, $2,   CURRENT_DATE )
-             RETURNING id_image`,
-         [id_product, image_name]).catch(console.log); 
-        return results ;
-    }    
+    async updatePublicationDetail(id_product, price, brand, model, year, condition, mileage, engine_number, warranty, owner, delivery, pay_now_delivery,facipay,contact_me) {
+        let response;
+        try {
+            const result = await ProductDetails.update({
+                price: price,
+                brand: brand,
+                model: model,
+                year: year,
+                condition: condition,
+                mileage: mileage,
+                engine_number: engine_number,
+                warranty: warranty,
+                owner: owner,
+                delivery: delivery,
+                pay_now_delivery: pay_now_delivery,
+                facipay: facipay,
+                contact_me: contact_me
+            }, {
+                where: {
+                    id_product: id_product
+                }
+            });
 
+            response = result; // Retorna las filas actualizadas
+        } catch (error) {
+            response = error;
+        }
+
+        return response;
+    }
+
+    async registerImage(image_name, id_product) {
+        try {
+            const result = await ProductImages.create({id_product: id_product, image_name: image_name, creation_date: new Date()});
+
+            return result;
+        } catch (error) {
+            console.log(error);
+        }
+    }
     async updateImage(photo, id_producto) {
-        let response
+        let response;
         try {
-            const query = 'UPDATE mypick.product_images SET photo = $1 WHERE email = $2';
-            const values = [photo,id_producto];
-            const result = await db.query(query, values);           
-            response = result
-       
-     } catch (err) { 
-        response = err;
-       }  
-       return response
+            const result = await ProductImages.update({
+                photo
+            }, {where: {
+                    id_producto
+                }});
+            response = result;
+        } catch (err) {
+            response = err;
+        }
+        return response;
     }
-            
+
 }
 
-module.exports =  PubControllers;
- 
+module.exports = PubControllers;
