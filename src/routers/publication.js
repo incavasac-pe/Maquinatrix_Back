@@ -9,11 +9,11 @@ router.get('/list_publications_panel', async (req, res) => {
     let status = 200;
     const search = req.query.search ?? '';
     const tpublicacion = req.query ?. tpublicacion ?? '';
+    const region = req.query ?. region ?? '';
     const category = req.query ?. category ?? '';
-    const fcreacion = req.query ?. fcreacion ?? '';
-    console.log("tpublicacion",tpublicacion)
+    const fcreacion = req.query ?. fcreacion ?? ''; 
 
-    result = await new PubControllers().getPublicationsPanel(search, tpublicacion, category, fcreacion)
+    result = await new PubControllers().getPublicationsPanel(search, tpublicacion, category, fcreacion,region)
 
     if (result.length > 0) {
         response.error = false;
@@ -200,8 +200,9 @@ router.get('/list_publications', async (req, res) => {
     const limit = req.query ?. limit ?? '';
     const price_max = req.query ?. price_max ?? '';
     const price_min = req.query ?. price_min ?? '';
+    const region = req.query ?. region ?? '';
 
-    result = await new PubControllers().getPublicationsPortal(search, tpublicacion, category, limit, price_max, price_min)
+    result = await new PubControllers().getPublicationsPortal(search, tpublicacion, category, limit, price_max, price_min,region)
 
     if (result.length > 0) {
         response.error = false;

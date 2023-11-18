@@ -94,7 +94,7 @@ class PubControllers {
         }
     }
 
-    async getPublicationsPanel(search, tpublicacion, category, fcreacion) {
+    async getPublicationsPanel(search, tpublicacion, category, fcreacion,region) { 
         try {
             const whereClause = {
                 status_id: {
@@ -107,7 +107,11 @@ class PubControllers {
                     [Op.iLike]: `%${search}%`
                 };
             }
-
+            if (region) {
+                whereClause.location = {
+                    [Op.iLike]: `%${region}%`                  
+               }; 
+            }
             if (tpublicacion) {
                 whereClause['$PublicationType.id_publication_type$'] = tpublicacion;
             }
@@ -150,7 +154,7 @@ class PubControllers {
     }
 
 
-    async getPublicationsPortal(search, tpublicacion, category, limit, price_max, price_min) {
+    async getPublicationsPortal(search, tpublicacion, category, limit, price_max, price_min,region) { 
         try {
             const whereClause = {
                 status_id: {
@@ -159,16 +163,14 @@ class PubControllers {
             };
             if (search) {
               whereClause[Op.or] = [
-                { title: { [Op.iLike]: `%${search}%` } },
-                { location: { [Op.iLike]: `%${search}%` } }
+                { title: { [Op.iLike]: `%${search}%` } }, 
               ];
             }
-
-            /*if (search) {
-                whereClause.title = {
-                    [Op.iLike]: `%${search}%`
-                };
-            }*/
+            if (region) {
+                whereClause.location = {
+                    [Op.iLike]: `%${region}%`                  
+               }; 
+            }
 
             if (tpublicacion) {
                 whereClause.id_publication_type = tpublicacion;
@@ -206,7 +208,7 @@ class PubControllers {
                         }
                     }, {
                         model: PublicationType,
-                        attributes: ['type_pub']
+                        //attributes: ['type_pub']
                     }, {
                         model: Category,
                         attributes: ['category']
@@ -351,29 +353,46 @@ class PubControllers {
 
         return response;
     }
-
     async registerImage(image_name, id_product) {
-        try {
-            const result = await ProductImages.create({id_product: id_product, image_name: image_name, creation_date: new Date()});
-
-            return result;
+        try { 
+            const existingImage = await ProductImages.findOne({ where: { image_name, id_product } });    
+            if (existingImage) { 
+                const result = await ProductImages.update(
+                    { creation_date: new Date() },
+                    { where: { image_name, id_product } }
+                );
+    
+                return result;
+            } else {
+                // La imagen no existe, realizar una inserción 
+                const result = await ProductImages.create({
+                    id_product: id_product,
+                    image_name: image_name,
+                    creation_date: new Date()
+                });
+    
+                return result;
+            }
         } catch (error) {
             console.log(error);
         }
     }
-    async updateImage(photo, id_producto) {
-        let response;
+    
+    async   deleteImagesByProductId(id_producto,name) {
         try {
-            const result = await ProductImages.update({
-                photo
-            }, {where: {
-                    id_producto
-                }});
-            response = result;
-        } catch (err) {
-            response = err;
+            // Eliminar los registros de imágenes por el id_producto
+            const result = await ProductImages.destroy({
+                where: {
+                    id_product: id_producto,
+                    image_name :name
+                }
+            });
+    
+            return result;
+        } catch (error) {
+            console.log(error);
+            return false;
         }
-        return response;
     }
 
 }
