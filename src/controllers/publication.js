@@ -378,7 +378,7 @@ class PubControllers {
         }
     }
     
-    async   deleteImagesByProductId(id_producto,name) {
+    async deleteImagesByProductId(id_producto,name) {
         try {
             // Eliminar los registros de imágenes por el id_producto
             const result = await ProductImages.destroy({
