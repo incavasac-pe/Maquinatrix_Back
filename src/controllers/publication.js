@@ -216,6 +216,7 @@ class PubControllers {
                         model: ProductImages,
                         as: 'product_images',
                         attributes: ['image_name'],
+                        order: [['id_image', 'ASC']],
                         limit: 1
 
                     }
@@ -273,16 +274,17 @@ class PubControllers {
             console.log(error);
         }
     }
-
+ 
     async getPublicationsDetailsImagen(id) {
         try {
             const results = await ProductImages.findAll({
                 where: {
                     id_product: id
                 },
-                attributes: ['image_name']
+                attributes: ['image_name'],
+                order: [['id_image', 'ASC']]
             });
-
+    
             return results;
         } catch (error) {
             console.log(error);
