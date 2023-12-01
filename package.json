@@ -17,8 +17,7 @@
     "url": "https://github.com/incavasac-pe/Maquinatrix_Back/issues"
   },
   "homepage": "https://github.com/incavasac-pe/Maquinatrix_Back#readme",
-  "dependencies": {
-    "@img/sharp-win32-x64": "^0.33.0",
+  "dependencies": {   
     "bcrypt": "^5.1.1",
     "cors": "^2.8.5",
     "crypto": "^1.0.1",
@@ -35,8 +34,6 @@
     "nodemon": "^3.0.1",
     "pg": "^8.11.3",
     "pg-hstore": "^2.3.4",
-    "sequelize": "^6.33.0",
-    "sharp": "^0.33.0",
-    "webp-converter": "^2.3.3"
+    "sequelize": "^6.33.0"
   }
 }
