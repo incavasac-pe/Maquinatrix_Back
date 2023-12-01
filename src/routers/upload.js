@@ -5,8 +5,8 @@ const {newResponseJson} = require('../responseUtils');
 const authenticateToken = require('../middleware/auth');
 const path = require('path');
 const fs = require('fs');
-const webp = require('webp-converter'); 
-const sharp = require('sharp');
+//const webp = require('webp-converter'); 
+//const sharp = require('sharp');
 const _dirname = './public/uploads';
  
 router.post('/upload_image', async (req, res) => {
@@ -52,7 +52,7 @@ res.status(status).json(response);
   });
 
   async function convertToWebP(inputPath, outputPath) {
-    await sharp(inputPath).toFormat('webp').toFile(outputPath);
+   // await sharp(inputPath).toFormat('webp').toFile(outputPath);
   }
   function eliminarCaracteresEspeciales(string) {
     if (typeof string !== 'string' || string.length === 0) {
