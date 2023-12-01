@@ -216,7 +216,7 @@ class PubControllers {
                         model: ProductImages,
                         as: 'product_images',
                         attributes: ['image_name'],
-                        order: [['id_image', 'ASC']],
+                        order: [['path', 'ASC']],
                         limit: 1
 
                     }
@@ -282,7 +282,7 @@ class PubControllers {
                     id_product: id
                 },
                 attributes: ['image_name'],
-                order: [['id_image', 'ASC']]
+                order: [['path', 'ASC']]
             });
     
             return results;
@@ -355,9 +355,9 @@ class PubControllers {
 
         return response;
     }
-    async registerImage(image_name, id_product) {
+    async registerImage(image_name, id_product,path) {
         try { 
-            const existingImage = await ProductImages.findOne({ where: { image_name, id_product } });    
+            const existingImage = await ProductImages.findOne({ where: { path, id_product } });    
             if (existingImage) { 
                 const result = await ProductImages.update(
                     { creation_date: new Date() },
@@ -370,6 +370,7 @@ class PubControllers {
                 const result = await ProductImages.create({
                     id_product: id_product,
                     image_name: image_name,
+                    path:path,
                     creation_date: new Date()
                 });
     
@@ -380,6 +381,22 @@ class PubControllers {
         }
     }
     
+    async deleteImagesByProductIdAll(id_producto) {
+        try {
+            // Eliminar los registros de imágenes por el id_producto
+            const result = await ProductImages.destroy({
+                where: {
+                    id_product: id_producto 
+                }
+            });
+    
+            return result;
+        } catch (error) {
+            console.log(error);
+            return false;
+        }
+    }
+
     async deleteImagesByProductId(id_producto,name) {
         try {
             // Eliminar los registros de imágenes por el id_producto

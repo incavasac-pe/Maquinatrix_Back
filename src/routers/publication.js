@@ -208,12 +208,10 @@ router.get('/list_publications', async (req, res) => {
         response.error = false;
         response.msg = 'Publicaciones encontradas';
         response.count = result.length;
-        response.data = result;
- 
+        response.data = result; 
     } else {
         response.msg = 'No se encontraron publicaciones';     
     }
-
 
     res.status(status).json(response);
 });
