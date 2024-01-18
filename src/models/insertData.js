@@ -4,9 +4,47 @@ const PublicationType = require('./PublicationType');
 const Category = require('./Category');
 const Users = require('./User');
 const UserRoles = require('./UserRoles');
-
+const TypeUser = require('./TypeUser');
+const TypeDoc = require('./TypeDoc');
 const insertData = async () => {
-    try { // Insertar registros en la tabla 'status'
+    try { 
+            // Insertar registros en la tabla 'TypeDoc'
+            await TypeDoc.bulkCreate([
+            {
+                id_type_doc: 1,
+                type_doc: 'RUT', 
+                status_id: 1
+            }, {
+                id_type_doc: 2,
+                type_doc: 'PASAPORTE', 
+                status_id: 1
+            },
+            {
+                id_type_doc: 3,
+                type_doc: 'RUT EMPRESA', 
+                status_id: 1
+            },
+            {
+                id_type_doc: 4,
+                type_doc: 'RUT REPRESENTANTE LEGAL', 
+                status_id: 1
+            }
+        ]);
+         // Insertar registros en la tabla 'TypeUser'
+         await TypeUser.bulkCreate([
+            {
+                id_type_user: 1,
+                type_user: 'PARTICULAR',
+                description: 'TIPO DE USUARIO PARTICULAR ',
+                status_id: 1
+            }, {
+                id_type_user: 2,
+                type_user: 'EMPRESA',
+                description: 'TIPO DE USUARIO EMPRESA',
+                status_id: 1
+            } 
+        ]);
+        // Insertar registros en la tabla 'status'
         await Status.bulkCreate([
             {
                 id_status: 1,
@@ -58,14 +96,14 @@ const insertData = async () => {
                 roles: 'SUBADMIN',
                 description: 'ACCESO TOTAL A LOS MODULOS EXCLUYENDO LOS DE ADMINISTRADOR',
                 status_id: 1
-            }, {
+            },  {
                 id_roles: 3,
                 roles: 'CUSTOMERS',
                 description: 'VISUALIZAR PUBLICACIONES',
                 status_id: 1
             }
-        ]);
-
+                ]);
+       
         // Insertar registros en la tabla 'publication_type'
         await PublicationType.bulkCreate([
             {
@@ -102,6 +140,12 @@ const insertData = async () => {
                 id_category: 4,
                 category: 'Productos y Accesorios',
                 description: 'Incluye los productos y accesorios en genera',
+                status_id: 1
+            },
+            {
+                id_category: 5,
+                category: 'Equipos y herramientas',
+                description: 'Incluye los herramients y accesorios en genera',
                 status_id: 1
             }
         ]);

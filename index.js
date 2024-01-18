@@ -17,6 +17,9 @@ require('./src/models/UserRoles.js');
 require('./src/models/Products.js');
 require('./src/models/ProductImages.js');
 require('./src/models/ProductDetails.js');
+require('./src/models/TypeUser.js');
+
+
 const insertData = require('./src/models/insertData.js');
 
 const PORT = process.env.PORT || 3500;
@@ -41,7 +44,7 @@ for (const route of routes)  {
 }
 sequelize.sync().then(() => {
   console.log('Tablas sincronizadas');
-    insertData();
+   insertData();
   app.listen(PORT, () => {
     console.log(`App running on port ${PORT}.`);
   });
