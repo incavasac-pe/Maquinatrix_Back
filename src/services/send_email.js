@@ -38,7 +38,21 @@ class EmailSender {
         <body>        
         </body>
         </html>`
-        } else {
+        } else if(type == 2) {
+            html = `<!DOCTYPE html>
+            <html>
+            <head>
+                <meta name="viewport" content="width=device-width">
+                <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">     
+            </head>
+            <body>
+            <h1>Recuperar contraseña</h1>
+            <p>Se ha generado el código : <b> ${data}</b> </p>       
+            </body>
+            </html>`
+        } else if(type == 3) {
+            const activationLink = 'http://localhost/Maquinatrix_frontend/activar-cuenta?token='+data;
+            const paragraph = `<p>Se ha realizado el registro de tu cuenta maquinatrix, activa tu cuenta haciendo clic <a href="${activationLink}"><b>aquí</b></a>.</p>`;
             html = `<!DOCTYPE html>
         <html>
         <head>
@@ -46,8 +60,8 @@ class EmailSender {
             <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">     
         </head>
         <body>
-        <h1>Nueva contraseña de Maquinatrix</h1>
-        <p>Se ha realizado la actualización de la contraseña: <b> ${data}</b> </p>       
+        <h1>Registro de cuenta Maquinatrix</h1>
+        ${paragraph}  
         </body>
         </html>`
         }

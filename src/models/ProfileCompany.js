@@ -1,4 +1,4 @@
-// models/Profile.js
+// models/ProfileCom.js
 
 const {DataTypes} = require('sequelize');
 const sequelize = require('../config/conexionDB');
@@ -23,7 +23,8 @@ const Profile = sequelize.define('Profile', {
     last_name: {
         type: DataTypes.STRING(150),
         allowNull: false
-    },   
+    },
+   
     id_type_doc:  {
         type: DataTypes.INTEGER,
         allowNull: true
@@ -36,33 +37,9 @@ const Profile = sequelize.define('Profile', {
         type: DataTypes.STRING(255),
         allowNull: false
     },
-    razon_social:{
-        type: DataTypes.STRING(15),
-        allowNull: true
-    },
-    rutCompany:{
-        type: DataTypes.STRING(15),
-        allowNull: true
-    },
     photo: {
         type: DataTypes.TEXT,
         allowNull: true
-    },
-    FullNameRepreLegal:{
-        type: DataTypes.STRING(150),
-        allowNull: true
-    },
-    LastNameRepreLegal:{
-        type: DataTypes.STRING(150),
-        allowNull: true
-    },
-    RutRepreLegal:{
-        type: DataTypes.STRING(150),
-        allowNull: true
-    },
-    emailRepreLegal:{
-        type: DataTypes.STRING(255),
-        allowNull: true, 
     }
 }, {
     tableName: 'profile',

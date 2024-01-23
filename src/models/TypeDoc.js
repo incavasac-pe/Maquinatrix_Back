@@ -1,42 +1,33 @@
-// models/User.js
+// models/Roles.js
 
 const {DataTypes} = require('sequelize');
 const sequelize = require('../config/conexionDB');
 const Status = require('./Status');
 
-const Users = sequelize.define('Users', {
-    id_user: {
+const TypeDoc = sequelize.define('TypeDoc', {
+    id_type_doc: {
         type: DataTypes.INTEGER,
         allowNull: false,
         primaryKey: true,
         autoIncrement: true
-        
     },
-    email: {
-        type: DataTypes.STRING(255),
-        allowNull: false,
-        unique: true
-    },
-    password: {
-        type: DataTypes.STRING(255),
+    type_doc: {
+        type: DataTypes.STRING(25),
         allowNull: false
     },
+  
     status_id: {
         type: DataTypes.INTEGER,
         allowNull: false
-    },
-    codepassword: {
-        type: DataTypes.STRING(10),
-        allowNull: true
     }
 }, {
-    tableName: 'users',
+    tableName: 'type_document',
     timestamps: false
 });
 
-Users.belongsTo(Status, {
+TypeDoc.belongsTo(Status, {
     foreignKey: 'status_id',
     targetKey: 'id_status'
 });
 
-module.exports = Users;
+module.exports = TypeDoc;
