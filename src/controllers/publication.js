@@ -180,7 +180,7 @@ class PubControllers {
                 whereClause.id_category = category;
             }
 
-            let orderClause = [['id_product']];
+            let orderClause = [];
 
 
             if (price_max) {
@@ -188,7 +188,7 @@ class PubControllers {
             } else if (price_min) {
                 orderClause = [['product_details', 'price', 'DESC']];
             }
-
+            console.log("orden",orderClause)
             const results = await Products.findAll({
                 attributes: [
                     'id_product',

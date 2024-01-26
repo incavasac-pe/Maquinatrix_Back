@@ -18,7 +18,7 @@ require('./src/models/Products.js');
 require('./src/models/ProductImages.js');
 require('./src/models/ProductDetails.js');
 require('./src/models/TypeUser.js');
-
+require('./src/models/ProductType.js');
 
 const insertData = require('./src/models/insertData.js');
 
@@ -44,7 +44,7 @@ for (const route of routes)  {
 }
 sequelize.sync().then(() => {
   console.log('Tablas sincronizadas');
-   insertData();
+  // insertData();
   app.listen(PORT, () => {
     console.log(`App running on port ${PORT}.`);
   });
