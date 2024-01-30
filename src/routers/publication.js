@@ -74,16 +74,18 @@ router.post('/register_publication', authenticateToken, async (req, res) => {
     let status = 400;
     let flag = false;
 
-    const {title, id_publication_type, id_category, status_id} = req.body;
+    const {id_publication_type, id_category, status_id,id_product_type,id_machine,title,description} = req.body;
 
     // Validar los datos de entrada
-    if (title.trim() == '' || status_id == null || id_publication_type == null) {
+    if (title.trim() == '' || description.trim() == ''|| status_id == null || id_publication_type == null || id_product_type == null
+    || id_machine == null || id_category== null ) {
         flag = true;
-        response.msg = 'Campos vacíos';
+        response.msg = 'Faltan campos por completar';
     }
 
     if (! flag) {
-        result = await new PubControllers().registerPub(title, id_publication_type, id_category, req.user.id_user);
+        result = await new PubControllers().registerPub(id_publication_type, id_category, status_id,id_product_type,id_machine,title,description,req.user.id_user);
+        console.LO
         if (result != undefined) {
             response.error = false;
             response.msg = 'Publicación registrada exitosamente';

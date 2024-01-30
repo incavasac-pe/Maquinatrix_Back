@@ -19,7 +19,8 @@ require('./src/models/ProductImages.js');
 require('./src/models/ProductDetails.js');
 require('./src/models/TypeUser.js');
 require('./src/models/ProductType.js');
-
+require('./src/models/MarcaType.js');
+require('./src/models/MachineType.js');
 const insertData = require('./src/models/insertData.js');
 
 const PORT = process.env.PORT || 3500;

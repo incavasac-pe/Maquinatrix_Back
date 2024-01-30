@@ -71,10 +71,7 @@ class UserControllers {
                 attributes: [
                     'id_user',
                     'email',
-                    'status_id',
-                    'Profile.full_name',
-                    'Profile.photo',
-                    'UserRoles.id_role', 
+                    'status_id', 
                 ],
                 include: [
                    /* {
@@ -83,10 +80,13 @@ class UserControllers {
                         where: {
                             id_status: '3'
                         }
-                    }, */
+                    },  */
                     {
                         model: UserRoles,
                         required: true,
+                        attributes: [
+                            'id_role'
+                          ],
                         include: [
                             {
                                 model: Roles,
@@ -95,7 +95,10 @@ class UserControllers {
                         ]
                     }, {
                         model: Profile,
-                        required: false
+                        required: false,
+                        attributes: [
+                            'full_name'
+                          ]
                     }
                 ],
                 where: {

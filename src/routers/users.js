@@ -51,79 +51,77 @@ router.post('/register_account', async (req, res) => {
 
 
 })
-
 router.post('/login_account', async (req, res) => {
     const response = newResponseJson();
     let status = 400;
     let flag = false;
-
     const { email, password } = req.body;
 
     if (email.trim() == '' || password.trim() == '') {
         flag = true;
-        response.msg = 'Campos vacios';
+        response.msg = 'Campos vacíos';
+        res.status(status).json(response);
+        return; // Terminar la ejecución aquí
     }
-    let validEmail = /^\w+([.-_+]?\w+)*@\w+([.-]?\w+)*(\.\w{2,10})+$/
+
+    let validEmail = /^\w+([.-_+]?\w+)*@\w+([.-]?\w+)*(\.\w{2,10})+$/;
     if (!validEmail.test(email)) {
         response.msg = `Correo electrónico inválido`;
-        res.status(status).json(response)
+        res.status(status).json(response);
+        return; // Terminar la ejecución aquí
     }
 
-    exist = await new UserControllers().validateCredencials(email, password);
-    if (exist.length == 0) {
+    userData = await new UserControllers().validateCredencials(email, password);  
+    if (userData.length == 0) {
         response.msg = `Credenciales inválidas`;
-        res.status(status).json(response)
-    }
-    const userData = exist[0];
-    const { id_user, status_id, Profile, UserRoles } = userData;
-
-    if (status_id != 3) {
+        res.status(status).json(response);
+        return; // Terminar la ejecución aquí
+    } 
+   const id_user = userData[0].id_user
+   const status_id = userData[0].status_id 
+    if ( status_id != 3) {
         response.msg = `La cuenta no está activa.`;
-        res.status(status).json(response)
+        res.status(status).json(response);
+        return; // Terminar la ejecución aquí
     }
-
-    let full_name,
-        photo,
-        roles,
-        id_roles;
-    if (Profile) {
-        full_name = Profile.full_name;
-        photo = Profile.photo;
+     
+    let full_name, photo, roles, id_roles;
+    if (userData[0].Profile) {
+        full_name = userData[0].Profile.full_name;
+        photo = userData[0].Profile.photo;
     } else {
         full_name = null;
         photo = null;
     }
-    if (UserRoles) {
-        roles = UserRoles[0].Role.roles
-        id_roles = UserRoles[0].Role.id_roles
+    if (userData[0].UserRoles[0].Role) { 
+         roles = userData[0].UserRoles[0].Role.roles;
+         id_roles = userData[0].UserRoles[0].Role.id_roles
     } else {
         roles = null;
-        id_roles = null
+        id_roles = null;
     }
-    const token = jwt.sign({
-        id_user: id_user,
-        email: email,
-        full_name: full_name
+    const token = jwt.sign({   
+        id_user ,
+        email,
+        full_name,
+        status_id 
     }, process.env.JWT_SECRET, { expiresIn: '1h' });
     response.error = false;
     response.msg = `Inicio de sesión exitoso`;
     response.data = {
-        status_id,
         id_user,
+        status_id, 
         email,
         full_name,
         photo,
         roles,
         id_roles,
         token
-    }
-    status = 200
+    };
+    status = 200;
 
-    res.status(status).json(response)
-
-
+    res.status(status).json(response);
 });
-
 
 router.post('/generateDigPassword', async (req, res) => {
     const response = newResponseJson();

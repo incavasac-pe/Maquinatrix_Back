@@ -36,16 +36,19 @@ ProductImages.belongsTo(Products, {
 });
 class PubControllers {
 
-    async registerPub(title, id_publication_type, id_category, id_user) {
+    async registerPub(id_publication_type, id_category, status_id,id_product_type,id_machine,title,description, id_user) 
+    {
         try {
             const result = await Products.create({
                 title: title,
                 location: '',
-                description: '',
+                description :description,
                 id_publication_type: id_publication_type,
                 id_category: id_category,
+                id_product_type:id_product_type,
+                id_machine:id_machine,
                 create_at: new Date(),
-                status_id: '6',
+                status_id: status_id,
                 id_user: id_user
             });
 
