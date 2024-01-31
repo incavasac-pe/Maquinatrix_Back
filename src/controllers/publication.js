@@ -2,6 +2,8 @@ const Category = require('../models/Category');
 const PublicationType = require('../models/PublicationType');
 const Products = require('../models/Products');
 const ProductDetails = require('../models/ProductDetails');
+const ProductTechnical = require('../models/ProductTechnical');
+const ProductDimensions = require('../models/ProductDimensions');
 const ProductImages = require('../models/ProductImages');
 const {Op} = require('sequelize');
 
@@ -9,10 +11,16 @@ Products.hasOne(ProductDetails, {
     foreignKey: 'id_product',
     as: 'product_details'
 });
-ProductDetails.belongsTo(Products, {
+ 
+Products.hasOne(ProductTechnical, {
     foreignKey: 'id_product',
-    as: 'product_details'
+    as: 'product_technical_characteristics'
 });
+Products.hasOne(ProductDimensions, {
+    foreignKey: 'id_product',
+    as: 'product_dimension'
+});
+ 
 Products.belongsTo(PublicationType, {
     foreignKey: 'id_publication_type',
     as: 'publication_type'
@@ -40,8 +48,7 @@ class PubControllers {
     {
         try {
             const result = await Products.create({
-                title: title,
-                location: '',
+                title: title,                
                 description :description,
                 id_publication_type: id_publication_type,
                 id_category: id_category,
@@ -58,7 +65,7 @@ class PubControllers {
         }
     }
 
-    async registerPubDetails(id_product, price, brand, model, year, condition, mileage, engine_number, warranty, owner, delivery, pay_now_delivery,facipay,contact_me) {
+    async registerPubDetails(id_product, price, brand, model, year, condition, mileage, engine_number, warranty, owner, delivery, pay_now_delivery,facipay,contact_me,chasis_number,patent,region,city,factory_code) {
         try {
             const result = await ProductDetails.create({
                 id_product: id_product,
@@ -74,10 +81,91 @@ class PubControllers {
                 delivery: delivery,
                 pay_now_delivery: pay_now_delivery,
                 facipay: facipay,
-                contact_me: contact_me
+                contact_me: contact_me,
+                chasis_number:chasis_number,
+                patent: patent,
+                region:region,
+                city:city,
+                factory_code: factory_code               
             });
 
             return result.id_product_details;
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+   
+    async registerPubTechnical(id_product, weight, power, displacement, torque, mixed_consumption, transmission, fuel, traction, km_traveled, hrs_traveled) {
+        try {
+            const result = await ProductTechnical.create({
+                id_product,
+                weight,
+                power,
+                displacement,
+                torque,
+                mixed_consumption,
+                transmission,
+                fuel,
+                traction,
+                km_traveled,
+                hrs_traveled
+            });
+    
+            return result.id_product_technical;
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+
+    async registerPubDimensions(id_product,
+        section_width,
+        aspect_ratio,
+        rim_diameter,
+        extern_diameter,
+        load_index,
+        speed_index,
+        maximum_load,
+        maximum_speed,
+        utqg,
+        wear_rate,
+        traction_index,
+        temperature_index,
+        runflat,
+        terrain_type,
+        tread_design,
+        type_of_service,
+        vehicle_type,
+        season,
+        land_type,
+        others ) {
+        try {
+            const result = await ProductDimensions.create({
+                id_product,
+                section_width,
+                aspect_ratio,
+                rim_diameter,
+                extern_diameter,
+                load_index,
+                speed_index,
+                maximum_load,
+                maximum_speed,
+                utqg,
+                wear_rate,
+                traction_index,
+                temperature_index,
+                runflat,
+                terrain_type,
+                tread_design,
+                type_of_service,
+                vehicle_type,
+                season,
+                land_type,
+                others 
+            });
+    
+            return result.id_product_dimension;
         } catch (error) {
             console.log(error);
         }
@@ -97,6 +185,33 @@ class PubControllers {
         }
     }
 
+    async getPublicationsTechnical (id) {
+        try {
+            const results = await ProductTechnical.findAll({
+                where: {
+                    id_product: id
+                }
+            });
+
+            return results;
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    async getPublicationsDimensions (id) {
+        try {
+            const results = await ProductDimensions.findAll({
+                where: {
+                    id_product: id
+                }
+            });
+
+            return results;
+        } catch (error) {
+            console.log(error);
+        }
+    }
     async getPublicationsPanel(search, tpublicacion, category, fcreacion,region) { 
         try {
             const whereClause = {
@@ -247,8 +362,7 @@ class PubControllers {
                 attributes: [
                     'id_product',
                     'title',
-                    'description',
-                    'location',
+                    'description',                     
                     [
                         Products.sequelize.fn('TO_CHAR', Products.sequelize.col('create_at'), 'DD Mon YYYY, HH:MI am'),
                         'create_at_formatted'
@@ -258,7 +372,15 @@ class PubControllers {
                     {
                         model: ProductDetails,
                         as: 'product_details'
-                    }, {
+                    }, 
+                    {
+                        model: ProductTechnical,
+                        as: 'product_technical_characteristics'
+                    },
+                    {
+                        model: ProductDimensions,
+                        as: 'product_dimension'
+                    },{
                         model: PublicationType,
                         as: 'publication_type',
                         attributes: ['type_pub']
@@ -344,7 +466,12 @@ class PubControllers {
                 delivery: delivery,
                 pay_now_delivery: pay_now_delivery,
                 facipay: facipay,
-                contact_me: contact_me
+                contact_me: contact_me,
+                chasis_number:chasis_number,
+                patent:patent,
+                region:region,
+                city:city,
+                factory_code:factory_code
             }, {
                 where: {
                     id_product: id_product
@@ -358,7 +485,7 @@ class PubControllers {
 
         return response;
     }
-    async registerImage(image_name, id_product,path) {
+    async registerImage(image_name, id_product,path,cover) {
         try { 
             const existingImage = await ProductImages.findOne({ where: { path, id_product } });    
             if (existingImage) { 
@@ -374,13 +501,15 @@ class PubControllers {
                     id_product: id_product,
                     image_name: image_name,
                     path:path,
+                    cover:cover,
                     creation_date: new Date()
                 });
     
                 return result;
             }
-        } catch (error) {
-            console.log(error);
+        } catch (error) { 
+            return false;
+          
         }
     }
     

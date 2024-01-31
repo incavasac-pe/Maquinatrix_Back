@@ -21,10 +21,7 @@ const Products = sequelize.define('Products', {
         type: DataTypes.STRING(255),
         allowNull: false
     },
-    location: {
-        type: DataTypes.STRING(255),
-        allowNull: false
-    },
+   
     description: {
         type: DataTypes.TEXT,
         allowNull: true

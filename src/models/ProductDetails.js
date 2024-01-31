@@ -15,47 +15,67 @@ const ProductDetails = sequelize.define('ProductDetails', {
         type: DataTypes.INTEGER,
         allowNull: true
     },
+    region: {
+        type: DataTypes.STRING(50),
+        allowNull: false
+    },
+    city: {
+        type: DataTypes.STRING(100),
+        allowNull: false
+    },
     price: {
         type: DataTypes.STRING(50),
         allowNull: false
     },
-    brand: {
+    brand: { //marca
         type: DataTypes.STRING(255),
         allowNull: false
     },
-    model: {
+    model: { //modelo
         type: DataTypes.STRING(255),
         allowNull: false
     },
-    year: {
+    year: { //año
         type: DataTypes.STRING(10),
         allowNull: false
     },
-    condition: {
+    factory_code: { //codigo de fabrica
         type: DataTypes.STRING(50),
         allowNull: false
     },
     mileage: {
-        type: DataTypes.STRING(10),
-        allowNull: false
-    },
-    engine_number: {
         type: DataTypes.STRING(50),
         allowNull: false
     },
-    warranty: {
+    engine_number: { //numero de motor
         type: DataTypes.STRING(50),
         allowNull: false
     },
-    owner: {
+    chasis_number: {//numero chasis
         type: DataTypes.STRING(50),
         allowNull: false
     },
-    delivery: {
+    patent:{ //patente
+        type: DataTypes.STRING(50),
+        allowNull: false
+    },
+    warranty: {  //grantia
+        type: DataTypes.STRING(50),
+        allowNull: false
+    },
+    condition: { //condicion nuevo o usado
+        type: DataTypes.STRING(50),
+        allowNull: false
+    },
+    owner: { //dueño
+        type: DataTypes.STRING(50),
+        allowNull: false
+    },
+    delivery: { //despacho
         type: DataTypes.CHAR(1),
         allowNull: false
     },
-    pay_now_delivery: {
+    pay_now_delivery: {  
         type: DataTypes.CHAR(1),
         allowNull: false
     },

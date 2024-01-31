@@ -15,7 +15,7 @@ router.post('/upload_image', async (req, res) => {
     response.msg = 'Carga exitosa';
     let status = 200;
     const id_product = req.query.id_product;
-   // const name_prd = req.query.name;
+    const cover = req.query.cover ?? false;
     const orden = req.query.orden;
     let EDFile = req.files.file;
  
@@ -38,17 +38,24 @@ router.post('/upload_image', async (req, res) => {
         //  await convertToWebP(originalFilePath, convertedFilePath);
           
           //fs.unlinkSync(originalFilePath); // Eliminar la imagen original
-          new PubControllers().registerImage(newFileName +  '.' + imageType, id_product, orden);
-        } catch (error) {
+       const result_img =  await new PubControllers().registerImage(newFileName +  '.' + imageType, id_product, orden,cover);
+          if(!result_img){
+            response.error = false;
+            status = 500;
+            response.msg = 'error al insertar en la BD la imagen';
+          }
+    
+      } catch (error) {
+        console.log("errorrrrrrrrrr",error)
           response.error = false;
           status = 500;
-          response.msg = 'error al convertir la imagen a WebP';
+          response.msg = 'error al convertir la imagen a WebP' +error;
         }
+       
       }  
-      
+      res.status(status).json(response);
     });
- 
-res.status(status).json(response);
+  
   });
 
   async function convertToWebP(inputPath, outputPath) {

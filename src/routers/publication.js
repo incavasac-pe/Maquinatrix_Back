@@ -113,29 +113,26 @@ router.post('/register_product_details', authenticateToken, async (req, res) => 
         year,
         condition,
         mileage,
-        engine_number,
+        engine_number,chasis_number,patent,
         warranty,
         owner,
         delivery,
         pay_now_delivery,
         facipay,
-        contact_me
+        contact_me,
+        region,city,factory_code,
     } = req.body;
 
-    /*if (id_product == '' || price === '' || brand == '' || model.trim() === '' || year === '' || condition.trim() === '' || mileage == '' || engine_number == '' || warranty.trim() === '' || owner.trim() === '' || delivery.trim() === '' || pay_now_delivery.trim() === '') {
-        flag = true;
-        response.msg = 'Campos vacíos';
-    }*/
-
+ 
     if (! flag) {
         let result_up,
             result_inser;
 
         exist = await new PubControllers().getPublicationsDetails(id_product);
         if (exist.length > 0) {
-            result_up = await new PubControllers().updatePublicationDetail(id_product, price, brand, model, year, condition, mileage, engine_number, warranty, owner, delivery, pay_now_delivery,facipay,contact_me);
+            result_up = await new PubControllers().updatePublicationDetail(id_product, price, brand, model, year, condition, mileage, engine_number, warranty, owner, delivery, pay_now_delivery,facipay,contact_me,chasis_number,patent,region,city,factory_code);
         } else {
-            result_inser = await new PubControllers().registerPubDetails(id_product, price, brand, model, year, condition, mileage, engine_number, warranty, owner, delivery, pay_now_delivery,facipay,contact_me);
+            result_inser = await new PubControllers().registerPubDetails(id_product, price, brand, model, year, condition, mileage, engine_number, warranty, owner, delivery, pay_now_delivery,facipay,contact_me,chasis_number,patent,region,city,factory_code);
         }
 
         if (result_inser != undefined || result_up == 1) {
@@ -152,6 +149,108 @@ router.post('/register_product_details', authenticateToken, async (req, res) => 
     }
 
     res.status(status).json(response);
+});
+
+
+router.post('/register_product_technical', authenticateToken, async (req, res) => {
+    const response = newResponseJson();
+    let status = 400;
+    let flag = false;
+
+    const {
+        id_product,weight,power,displacement,torque,mixed_consumption,transmission,fuel,traction,km_traveled,hrs_traveled        
+    } = req.body;
+ 
+    if (! flag) {
+        let result_up,
+            result_inser;
+
+        exist = await new PubControllers().getPublicationsTechnical(id_product);
+        if (exist.length > 0) {
+         result_up = await new PubControllers().updatePubTechnical( id_product,weight,power,displacement,torque,mixed_consumption,transmission,fuel,traction,km_traveled,hrs_traveled );
+        } else {
+            result_inser = await new PubControllers().registerPubTechnical( id_product,weight,power,displacement,torque,mixed_consumption,transmission,fuel,traction,km_traveled,hrs_traveled);
+        }
+
+        if (result_inser != undefined || result_up == 1) {
+            response.error = false;
+            response.msg = 'Detalle de la publicación técnica registrado exitosamente';
+            response.data = {
+                id_product_technical: id_product
+            };
+            status = 201;
+            res.status(status).json(response);
+        } else {
+            response.msg = 'Error al registrar el detalle técnico de la publicación';
+            res.status(status).json(response);
+        }
+
+    }
+ 
+});
+
+router.post('/register_product_dimensions', authenticateToken, async (req, res) => {
+    const response = newResponseJson();
+    let status = 400;
+    let flag = false;
+
+    const {
+        id_product,
+        section_width,
+        aspect_ratio,
+        rim_diameter,
+        extern_diameter,
+        load_index,
+        speed_index,
+        maximum_load,
+        maximum_speed,
+        utqg,
+        wear_rate,
+        traction_index,
+        temperature_index,
+        runflat,
+        terrain_type,
+        tread_design,
+        type_of_service,
+        vehicle_type,
+        season,
+        land_type,
+        others     
+    } = req.body;
+ 
+    if (! flag) {
+        let result_up,
+            result_inser;
+
+        exist = await new PubControllers().getPublicationsDimensions(id_product);
+        if (exist.length > 0) {
+         result_up = await new PubControllers().updatePubDimensions( id_product,
+            section_width,  aspect_ratio,  rim_diameter,   extern_diameter,
+            load_index, speed_index, maximum_load,  maximum_speed,
+            utqg, wear_rate, traction_index, temperature_index,
+            runflat, terrain_type, tread_design,  type_of_service, vehicle_type, season,  land_type,  others );
+        } else {
+            result_inser = await new PubControllers().registerPubDimensions( id_product,
+                section_width,   aspect_ratio,  rim_diameter, extern_diameter,load_index,
+                speed_index,   maximum_load,  maximum_speed,   utqg,   wear_rate,
+                traction_index,  temperature_index,  runflat,
+                terrain_type,    tread_design,       type_of_service,    vehicle_type,
+                season,      land_type,         others  );
+        }
+
+        if (result_inser != undefined || result_up == 1) {
+            response.error = false;
+            response.msg = 'Detalle de la publicación dimensions registrado exitosamente';
+            response.data = {
+                id_product_dimensions: id_product
+            };
+            status = 201;
+            res.status(status).json(response);
+        } else {
+            response.msg = 'Error al registrar el detalle dimensions de la publicación';
+            res.status(status).json(response);
+        }
+    } 
 });
 
 router.put('/update_publication_status', authenticateToken, async (req, res) => {

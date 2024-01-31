@@ -13,10 +13,15 @@ const ProductImages = sequelize.define('ProductImages', {
     },
     id_product: {
         type: DataTypes.INTEGER,
-        allowNull: true
+        allowNull: false
     },
     image_name: {
         type: DataTypes.STRING(255),
+        allowNull: true
+    },
+    cover: {
+        type: DataTypes.BOOLEAN,
+        default:false,
         allowNull: true
     },
     path: {
