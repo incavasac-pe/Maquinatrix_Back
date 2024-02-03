@@ -272,13 +272,16 @@ class PubControllers {
     }
 
 
-    async getPublicationsPortal(search, tpublicacion, category, limit, price_max, price_min,region) { 
+    async getPublicationsPortal(search, tpublicacion, category, limit, price_max, price_min,region,id_user,status_id) { 
         try {
-            const whereClause = {
-                status_id: {
-                    [Op.ne]: 8
-                }
-            };
+            const whereClause = { }
+            
+            if(status_id!= null){
+                whereClause.status_id = status_id;
+            }
+            if(id_user!= null){
+                whereClause.id_user = id_user;
+            }
             if (search) {
               whereClause[Op.or] = [
                 { title: { [Op.iLike]: `%${search}%` } }, 
@@ -298,21 +301,19 @@ class PubControllers {
                 whereClause.id_category = category;
             }
 
-            let orderClause = [];
+            let orderClause = ['id_product'];
 
 
             if (price_max) {
                 orderClause = [['product_details', 'price', 'ASC']];
             } else if (price_min) {
                 orderClause = [['product_details', 'price', 'DESC']];
-            }
-            console.log("orden",orderClause)
+            } 
             const results = await Products.findAll({
                 attributes: [
                     'id_product',
                     'title',
-                    'description',
-                    'location',
+                    'description', 
                     [
                         Products.sequelize.literal(`TO_CHAR(create_at, 'DD Mon YYYY, HH:MI am')`), 'create_at_formatted'
                     ],
@@ -324,9 +325,22 @@ class PubControllers {
                         attributes: {
                             exclude: ['id_product']
                         }
-                    }, {
-                        model: PublicationType,
-                        //attributes: ['type_pub']
+                    }, 
+                    {
+                        model: ProductTechnical,
+                        as: 'product_technical_characteristics',
+                        attributes: {
+                            exclude: ['id_product']
+                        }
+                    },
+                    {
+                        model: ProductDimensions,
+                        as: 'product_dimension', 
+                        attributes: {
+                            exclude: ['id_product']
+                        }
+                    },{
+                        model: PublicationType, 
                     }, {
                         model: Category,
                         attributes: ['category']
@@ -342,11 +356,11 @@ class PubControllers {
                 where: whereClause,
                 order: orderClause,
                 limit: limit
-            });
-
+            }); 
             return results;
         } catch (error) {
             console.log(error);
+            return false
         }
     }
 

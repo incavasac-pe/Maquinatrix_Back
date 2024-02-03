@@ -3,6 +3,7 @@
 const {DataTypes} = require('sequelize');
 const sequelize = require('../config/conexionDB');
 const Status = require('./Status');
+const TypeUser = require('./TypeUser');
 
 const Users = sequelize.define('Users', {
     id_user: {
@@ -28,7 +29,11 @@ const Users = sequelize.define('Users', {
     codepassword: {
         type: DataTypes.STRING(10),
         allowNull: true
-    }
+    },
+    id_type_user: {
+        type: DataTypes.INTEGER,
+        allowNull: false
+    },
 }, {
     tableName: 'users',
     timestamps: false
@@ -38,5 +43,5 @@ Users.belongsTo(Status, {
     foreignKey: 'status_id',
     targetKey: 'id_status'
 });
-
+Users.belongsTo(TypeUser, {foreignKey: 'id_type_user'})
 module.exports = Users;

@@ -37,11 +37,11 @@ const Profile = sequelize.define('Profile', {
         allowNull: false
     },
     razon_social:{
-        type: DataTypes.STRING(15),
+        type: DataTypes.STRING(100),
         allowNull: true
     },
     rutCompany:{
-        type: DataTypes.STRING(15),
+        type: DataTypes.STRING(20),
         allowNull: true
     },
     photo: {
@@ -63,7 +63,11 @@ const Profile = sequelize.define('Profile', {
     emailRepreLegal:{
         type: DataTypes.STRING(255),
         allowNull: true, 
-    }
+    },
+    id_user_ext: {
+        type: DataTypes.STRING(9),
+        allowNull: true,
+      },
 }, {
     tableName: 'profile',
     timestamps: false

@@ -7,25 +7,26 @@ const { newResponseJson } = require('./../responseUtils');
 const EmailSender = new require('../services/send_email');
 const emailSender = new EmailSender();
 var generator = require('generate-password');
+
 require('dotenv').config();
 
 
 router.post('/register_account', async (req, res) => {
     const response = newResponseJson();
-    let status = 400;
-    let flag = false;
+    let status = 400; 
     const userData = req.body;
+    const uniqueID = await new UserControllers().generateUniqueIDWithValidation();    console.log('ID único generado:', uniqueID);
+   
 
     // Verificar si los campos requeridos no están vacíos o nulos
-    const requiredFields = ['type_user', 'status_id', 'email', 'password', 'firstname', 'lastname', 'type_doc', 'num_doc', 'address'];
+    const requiredFields = ['id_type_user', 'status_id', 'email', 'password', 'firstname', 'lastname', 'type_doc', 'num_doc', 'address'];
     const missingFields = requiredFields.filter(field => !userData[field]);
 
-    if (missingFields.length > 0) {
-        flag = true;
+    if (missingFields.length > 0) { 
         response.msg = `Los siguientes campos son requeridos: ${missingFields.join(', ')}`;
         return res.status(status).send(response)
     }
-    result = await new UserControllers().createUser(userData);
+    result = await new UserControllers().createUser(userData,uniqueID);
     if (result && !result.error) {
         const token = jwt.sign({ email: userData.email }, process.env.JWT_SECRET, { expiresIn: '1h' });
         emailSender.sendEmail(userData.email, 'Registro de cuenta', token, 3).then(response_email => {
@@ -33,9 +34,9 @@ router.post('/register_account', async (req, res) => {
             response.error = false;
             response.msg = `Registro exitoso, se ha enviado al correo el link de validación.`;
             status = 201;
-            response.data = {
-                id_product: result
-            };
+            delete result.password;
+            response.data =  result
+            
             res.status(status).json(response);
         }).catch(error => {
             response.msg = `Error al enviar el correo`;
@@ -48,9 +49,8 @@ router.post('/register_account', async (req, res) => {
         res.status(status).json(response)
 
     }
-
-
 })
+
 router.post('/login_account', async (req, res) => {
     const response = newResponseJson();
     let status = 400;
@@ -70,7 +70,7 @@ router.post('/login_account', async (req, res) => {
         res.status(status).json(response);
         return; // Terminar la ejecución aquí
     }
-
+  
     userData = await new UserControllers().validateCredencials(email, password);  
     if (userData.length == 0) {
         response.msg = `Credenciales inválidas`;
@@ -202,7 +202,7 @@ router.post('/resetPassword', async (req, res) => {
             response.msg = 'Usuario no existe';
             res.status(status).json(response);
         } else {
-            const result_act = await new UserControllers().updateUser(password, email);
+            const result_act = await new UserControllers().updateUserPassword(password, email);
             if (result_act == 1) {
                 response.error = false;
                 response.msg = 'Se restableció la contraseña';
@@ -251,11 +251,70 @@ router.get('/activate_account', async (req, res) => {
     }
 });
 
+router.get('/profile_basic',authenticateToken, async (req, res) => {
+
+        const response = newResponseJson();
+        let status = 400;
+        response.error = true; 
+        const email = req.user.email ?? '';
+
+        const result = await new UserControllers().getUserByEmail(email);
+        if (result == null) {
+            response.msg = `Usuario no existe`;
+            res.status(status).json(response)
+        } else {
+             
+            const result_profile = await new UserControllers().getProfileUser(email); 
+            if (result_profile) {
+                response.error = false;
+                response.msg = `Datos basicos del usuario`;
+                response.data = result_profile; 
+                status = 200
+            } else {
+                response.msg = `Error en la BD.`;
+            }
+        }
+        res.status(status).json(response)  
+});
+
+router.patch('/profile_basic_update',authenticateToken, async (req, res) => {
+
+    const response = newResponseJson();
+    let status = 400;
+    response.error = true; 
+    const { id_profile } = req.query;
+    const updateFields = req.body; // Obtener los campos a actualizar de la solicitud
+
+    try { 
+       
+        const result_act = await new UserControllers().updateUserProfile(id_profile,updateFields);  
+        if (result_act?.error && result_act.error ) {
+            response.msg =  result_act
+            res.status(status).json(response);           
+        } else {
+            response.error = false;
+            response.msg = 'Se actualizaron los datos del perfil';
+            status = 200;
+            response.data = result_act
+            res.status(status).json(response);
+        }
+  
+    } catch (error) {
+        console.error('Error updating profile:', error);
+        return res.status(500).json({ error: 'Internal server error' });
+      }
+   
+});
+
 function generateFourDigitCode() {
     const min = 1000; // El valor mínimo de un número de 4 dígitos
     const max = 9999; // El valor máximo de un número de 4 dígitos
     const code = Math.floor(Math.random() * (max - min + 1)) + min;
     return code.toString();
 }
+
+
+
+  
 
 module.exports = router;

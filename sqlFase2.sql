@@ -11,3 +11,6 @@ ALTER TABLE public.product_details ADD includes_dispatch bool NULL;
  
 ALTER TABLE public.users ADD codepassword varchar(10) NULL;
 
+
+
+ALTER TABLE public.profile ADD id_user_ext varchar(9) NULL;

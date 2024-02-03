@@ -65,4 +65,5 @@ Products.belongsTo(Users, {foreignKey: 'id_user'});
 Products.belongsTo(PublicationType, {foreignKey: 'id_publication_type'});
 Products.belongsTo(ProductType, {foreignKey: 'id_product_type'});
 Products.belongsTo(MachineType, {foreignKey: 'id_machine'});
+
 module.exports = Products;

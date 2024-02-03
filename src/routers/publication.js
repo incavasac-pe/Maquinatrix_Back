@@ -302,10 +302,12 @@ router.get('/list_publications', async (req, res) => {
     const price_max = req.query ?. price_max ?? '';
     const price_min = req.query ?. price_min ?? '';
     const region = req.query ?. region ?? '';
+    const id_user = req.query?.id_user ?? null;
+    const status_id = req.query.status_id ?? null;
 
-    result = await new PubControllers().getPublicationsPortal(search, tpublicacion, category, limit, price_max, price_min,region)
+    result = await new PubControllers().getPublicationsPortal(search, tpublicacion, category, limit, price_max, price_min,region,id_user,status_id)
 
-    if (result.length > 0) {
+    if (result?.length > 0 || result) {
         response.error = false;
         response.msg = 'Publicaciones encontradas';
         response.count = result.length;
