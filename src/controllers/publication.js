@@ -6,6 +6,8 @@ const ProductTechnical = require('../models/ProductTechnical');
 const ProductDimensions = require('../models/ProductDimensions');
 const ProductImages = require('../models/ProductImages');
 const {Op} = require('sequelize');
+const Users = require('../models/User');
+const Profile =  require('../models/Profile');
 
 Products.hasOne(ProductDetails, {
     foreignKey: 'id_product',
@@ -42,6 +44,12 @@ ProductImages.belongsTo(Products, {
     foreignKey: 'id_product',
     as: 'product_images'
 });
+
+Products.hasOne(Users, {
+    foreignKey: 'id_user',
+    as: 'users'
+});
+  
 class PubControllers {
 
     async registerPub(id_publication_type, id_category, status_id,id_product_type,id_machine,title,description, id_user) 
@@ -351,7 +359,16 @@ class PubControllers {
                         order: [['path', 'ASC']],
                         limit: 1
 
-                    }
+                    },
+                    {
+                        model: Users,
+                        include: [
+                          {
+                            model: Profile
+                          }
+                        ]
+                      } 
+                 
                 ],
                 where: whereClause,
                 order: orderClause,

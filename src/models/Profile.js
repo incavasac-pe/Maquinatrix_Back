@@ -73,6 +73,5 @@ const Profile = sequelize.define('Profile', {
     timestamps: false
 });
 Profile.belongsTo(TypeDoc, {foreignKey: 'id_type_doc'})
-Profile.belongsTo(Users, {foreignKey: 'id_user'});
-
+Profile.belongsTo(Users, {foreignKey: 'id_user'}); 
 module.exports = Profile;

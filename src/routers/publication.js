@@ -302,12 +302,38 @@ router.get('/list_publications', async (req, res) => {
     const price_max = req.query ?. price_max ?? '';
     const price_min = req.query ?. price_min ?? '';
     const region = req.query ?. region ?? '';
+    const status_id = req.query.status_id ?? null;
+
+    result = await new PubControllers().getPublicationsPortal(search, tpublicacion, category, limit, price_max, price_min,region,null,status_id)
+
+    if (result?.length > 0 ) {
+        response.error = false;
+        response.msg = 'Publicaciones encontradas para mostrar al portal';
+        response.count = result.length;
+        response.data = result; 
+    } else {
+        response.msg = 'No se encontraron publicaciones';     
+    }
+
+    res.status(status).json(response);
+});
+
+router.get('/list_publications_byuser', async (req, res) => {
+    const response = newResponseJson();
+    let status = 200;
+    const search = req.query.search ?? '';
+    const tpublicacion = req.query ?. tpublicacion ?? '';
+    const category = req.query ?. category ?? '';
+    const limit = req.query ?. limit ?? '';
+    const price_max = req.query ?. price_max ?? '';
+    const price_min = req.query ?. price_min ?? '';
+    const region = req.query ?. region ?? '';
     const id_user = req.query?.id_user ?? null;
     const status_id = req.query.status_id ?? null;
 
     result = await new PubControllers().getPublicationsPortal(search, tpublicacion, category, limit, price_max, price_min,region,id_user,status_id)
-
-    if (result?.length > 0 || result) {
+ 
+    if (result?.length > 0  ) {
         response.error = false;
         response.msg = 'Publicaciones encontradas';
         response.count = result.length;
