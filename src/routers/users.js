@@ -15,7 +15,8 @@ router.post('/register_account', async (req, res) => {
     const response = newResponseJson();
     let status = 400; 
     const userData = req.body;
-    const uniqueID = await new UserControllers().generateUniqueIDWithValidation();    console.log('ID único generado:', uniqueID);
+    const uniqueID = await new UserControllers().generateUniqueIDWithValidation();   
+     console.log('ID único generado:', uniqueID);
    
 
     // Verificar si los campos requeridos no están vacíos o nulos
