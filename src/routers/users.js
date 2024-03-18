@@ -54,25 +54,27 @@ router.post('/register_account', async (req, res) => {
 
 router.post('/login_account', async (req, res) => {
     const response = newResponseJson();
-    let status = 400;
+    let status = 200;
     let flag = false;
-    const { email, password } = req.body;
+    const userDataBody = req.body;
+       // Verificar si los campos requeridos no están vacíos o nulos
+       const requiredFields = ['email', 'password'];
+       const missingFields = requiredFields.filter(field => !userDataBody[field]);
+   
+       if (missingFields.length > 0) { 
+           response.msg = `Los siguientes campos son requeridos: ${missingFields.join(', ')}`;
+           return res.status(status).send(response)
+       }
 
-    if (email.trim() == '' || password.trim() == '') {
-        flag = true;
-        response.msg = 'Campos vacíos';
-        res.status(status).json(response);
-        return; // Terminar la ejecución aquí
-    }
 
-    let validEmail = /^\w+([.-_+]?\w+)*@\w+([.-]?\w+)*(\.\w{2,10})+$/;
-    if (!validEmail.test(email)) {
+    let validEmail = /^\w+([.-_+]?\w+)*@\w+([.-]?\w+)*(\.\w{2,10})+$/;  
+    if (!validEmail.test(userDataBody.email)) {
         response.msg = `Correo electrónico inválido`;
         res.status(status).json(response);
         return; // Terminar la ejecución aquí
     }
   
-    userData = await new UserControllers().validateCredencials(email, password);  
+    userData = await new UserControllers().validateCredencials(userDataBody.email, userDataBody.password);  
     if (userData.length == 0) {
         response.msg = `Credenciales inválidas`;
         res.status(status).json(response);
@@ -86,13 +88,15 @@ router.post('/login_account', async (req, res) => {
         return; // Terminar la ejecución aquí
     }
      
-    let full_name, photo, roles, id_roles;
+    let full_name, photo, roles, id_roles,id_user_ext;
     if (userData[0].Profile) {
-        full_name = userData[0].Profile.full_name;
+        full_name = userData[0].Profile.full_name + ' '+ userData[0].Profile.last_name;
         photo = userData[0].Profile.photo;
+        id_user_ext = userData[0].Profile.id_user_ext;
     } else {
         full_name = null;
         photo = null;
+        id_user_ext = null;
     }
     if (userData[0].UserRoles[0].Role) { 
          roles = userData[0].UserRoles[0].Role.roles;
@@ -101,9 +105,10 @@ router.post('/login_account', async (req, res) => {
         roles = null;
         id_roles = null;
     }
+    const email_User = userDataBody.email
     const token = jwt.sign({   
         id_user ,
-        email,
+        email_User,
         full_name,
         status_id 
     }, process.env.JWT_SECRET, { expiresIn: '1h' });
@@ -112,14 +117,14 @@ router.post('/login_account', async (req, res) => {
     response.data = {
         id_user,
         status_id, 
-        email,
+        email_User,
         full_name,
         photo,
+        id_user_ext,
         roles,
         id_roles,
         token
     };
-    status = 200;
 
     res.status(status).json(response);
 });
@@ -257,7 +262,7 @@ router.get('/profile_basic',authenticateToken, async (req, res) => {
         const response = newResponseJson();
         let status = 400;
         response.error = true; 
-        const email = req.user.email ?? '';
+        const email = req.user.email_User ?? '';
 
         const result = await new UserControllers().getUserByEmail(email);
         if (result == null) {

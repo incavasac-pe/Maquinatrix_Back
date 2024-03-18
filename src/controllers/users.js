@@ -145,7 +145,9 @@ class UserControllers {
                         model: Profile,
                         required: false,
                         attributes: [
-                            'full_name'
+                            'full_name',
+                            'last_name',
+                            'id_user_ext'
                           ]
                     }
                 ],
