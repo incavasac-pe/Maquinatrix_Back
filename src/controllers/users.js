@@ -288,17 +288,14 @@ class UserControllers {
                 },
               });
 
-            const simplifiedResponse = {
-            data: {
+            const simplifiedResponse = {         
                 id_user,
                 status_id,
                 email, 
                 ...profile.dataValues, 
                 ...type_user.dataValues, 
                  num_publications : count
-            },
             };
-
    
             response = simplifiedResponse
         } catch (err) {
