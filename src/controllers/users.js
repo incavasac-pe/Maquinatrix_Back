@@ -5,6 +5,7 @@ const Roles = require('../models/Roles');
 const Profile = require('../models/Profile');
 const TypeUser = require('../models/TypeUser');
 const Products = require('../models/Products');
+const TypeDoc = require('../models/TypeDoc');
 
 
 UserRoles.belongsTo(Users, { foreignKey: 'id_user' });
@@ -21,6 +22,7 @@ Users.belongsTo(TypeUser, {
     foreignKey: 'id_type_user',
     as: 'type_user'
 });
+ 
 
 class UserControllers {
 
@@ -55,8 +57,7 @@ class UserControllers {
     for (let i = 0; i < 9; i++) {
       const randomIndex = Math.floor(Math.random() * digits.length);
       id += digits[randomIndex];
-    }
-  console.log("el id essssssssss",id)
+    } 
     return id;
   }
     // Función para crear un nuevo usuario
@@ -121,14 +122,7 @@ class UserControllers {
                     'email',
                     'status_id', 
                 ],
-                include: [
-                   /* {
-                        model: Status,
-                        required: true,
-                        where: {
-                            id_status: '3'
-                        }
-                    },  */
+                include: [ 
                     {
                         model: UserRoles,
                         required: true,
@@ -277,7 +271,7 @@ class UserControllers {
                         attributes: {
                             exclude: ['description','status_id'],                            
                         }
-                    }, 
+                    },  
                 ],
             });
             const { id_user, status_id, profile, type_user } = user;
@@ -293,7 +287,7 @@ class UserControllers {
                 status_id,
                 email, 
                 ...profile.dataValues, 
-                ...type_user.dataValues, 
+                ...type_user.dataValues,  
                  num_publications : count
             };
    

@@ -299,7 +299,7 @@ router.patch('/profile_basic_update',authenticateToken, async (req, res) => {
             res.status(status).json(response);           
         } else {
             response.error = false;
-            response.msg = 'Se actualizaron los datos del perfil';
+            response.msg = 'Datos actualizados exitosamente.';
             status = 200;
             response.data = result_act
             res.status(status).json(response);
