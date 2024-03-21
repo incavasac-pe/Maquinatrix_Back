@@ -173,6 +173,21 @@ class UserControllers {
         return response
     }
 
+    
+    async getUserByID(id_user) {
+        let response
+        try {
+            const user = await Users.findOne({
+                where: {
+                    id_user: id_user
+                }
+            });
+            response = user
+        } catch (err) {
+            response = err;
+        }
+        return response
+    }
     async updateUserPassword(password, email) {
         let response
         try {
@@ -180,9 +195,9 @@ class UserControllers {
 
             const result = await Users.update({
                 password: hashedPassword
-            }, {
+            }, { 
                 where: {
-                    email: email
+                   email:email
                 }
             });
             response = result
@@ -318,6 +333,45 @@ class UserControllers {
                 profile[key] = value;
                 await profile.save();
                 response = profile;
+              } catch (error) {
+                // Manejo de errores específicos del campo
+                if (error.name === 'SequelizeDatabaseError') { 
+                  return { error: true, msg: `${key}:`+ error.parent };
+                } else {
+                  // Manejo de otros errores 
+                  return { error: true, msg: `Error al actualizar el campo ${key}` };
+                }
+              }
+            }
+          } 
+        } catch (err) {
+          response = err;
+        }
+        
+        return response;
+      }
+
+      
+    async  updateUserEmail(id_user, updateFields) {
+        let response;
+        try {
+          const user = await Users.findByPk(id_user);
+          
+          if (!user) {
+            return { error: true, msg: 'Usuario no existe' };
+          }
+          
+          const { error: validationError } = user.validate(updateFields);
+          if (validationError) {
+            return { error: true, msg: 'Datos de perfil no válidos' };
+          }
+          
+          for (const [key, value] of Object.entries(updateFields)) {
+            if (user.dataValues.hasOwnProperty(key)) {
+              try {
+                user[key] = value;
+                await user.save();
+                response = user;
               } catch (error) {
                 // Manejo de errores específicos del campo
                 if (error.name === 'SequelizeDatabaseError') { 

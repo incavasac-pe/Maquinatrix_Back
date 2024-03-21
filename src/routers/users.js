@@ -222,6 +222,33 @@ router.post('/resetPassword', async (req, res) => {
     }
 });
 
+
+router.patch('/changePassword', async (req, res) => {
+    const response = newResponseJson();
+    let status = 400;
+    response.error = true;
+
+    const { id_user } = req.query;
+    const {  password } = req.body; 
+   
+        const result = await new UserControllers().getUserByID(id_user); 
+        if (result == null) {
+            response.msg = 'Usuario no existe';
+            res.status(status).json(response);
+        } else {
+            const result_act = await new UserControllers().updateUserPassword(password, result.email);
+            if (result_act == 1) {
+                response.error = false;
+                response.msg = 'Se actualizó la contraseña';
+                status = 200;
+                res.status(status).json(response);
+            } else {
+                response.msg = 'Ocurrió un error actualizando';
+                res.status(status).json(response);
+            }
+        } 
+});
+
 router.get('/activate_account', async (req, res) => {
     try {
         const response = newResponseJson();
@@ -279,8 +306,9 @@ router.get('/profile_basic',authenticateToken, async (req, res) => {
             } else {
                 response.msg = `Error en la BD.`;
             }
-        }
+            
         res.status(status).json(response)  
+        }
 });
 
 router.patch('/profile_basic_update',authenticateToken, async (req, res) => {
@@ -307,6 +335,37 @@ router.patch('/profile_basic_update',authenticateToken, async (req, res) => {
   
     } catch (error) {
         console.error('Error updating profile:', error);
+        return res.status(500).json({ error: 'Internal server error' });
+      }
+   
+});
+
+
+
+router.patch('/profile_basic_update_1',authenticateToken, async (req, res) => {
+
+    const response = newResponseJson();
+    let status = 400;
+    response.error = true; 
+    const { id_user } = req.query;
+    const updateFields = req.body; // Obtener los campos a actualizar de la solicitud
+
+    try { 
+       
+        const result_act = await new UserControllers().updateUserEmail(id_user,updateFields);  
+        if (result_act?.error && result_act.error ) {
+            response.msg =  result_act
+            res.status(status).json(response);           
+        } else {
+            response.error = false;
+            response.msg = 'Datos actualizados exitosamente.';
+            status = 200;
+            response.data = result_act
+            res.status(status).json(response);
+        }
+  
+    } catch (error) {
+        console.error('Error updating user:', error);
         return res.status(500).json({ error: 'Internal server error' });
       }
    
