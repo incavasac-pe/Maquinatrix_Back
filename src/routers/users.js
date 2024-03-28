@@ -111,7 +111,7 @@ router.post('/login_account', async (req, res) => {
         email_User,
         full_name,
         status_id 
-    }, process.env.JWT_SECRET, { expiresIn: '1h' });
+    }, process.env.JWT_SECRET, { expiresIn: '24h' });
     response.error = false;
     response.msg = `Inicio de sesión exitoso`;
     response.data = {

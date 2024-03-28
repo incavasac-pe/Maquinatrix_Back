@@ -40,7 +40,7 @@ const routes = [
   require('./src/routers/publication'),
   require('./src/routers/catalogos'),
   require('./src/routers/upload'),
-  require('./src/routers/regiones'),
+  require('./src/routers/location'),
 ];
 
 for (const route of routes)  {

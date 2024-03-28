@@ -2,7 +2,8 @@ const Category = require('../models/Category');
 const PublicationType = require('../models/PublicationType');
 const ProductType = require('../models/ProductType');
 const MachineType = require('../models/MachineType');
-
+const MarcaType = require('../models/MarcaType');
+const ModelType = require('../models/ModelType');
 
 class CatalogoControllers {
 
@@ -47,18 +48,65 @@ class CatalogoControllers {
             console.log(error);
         }
     }
-    async getMachine() {
+    async  getMachine(id_product_type) {
         try {
-            const results = await MachineType.findAll({
-                where: {
-                    status_id: 1
-                }
-            });
-            return results;
+          const whereCondition = {
+            status_id: 1
+          };
+      
+          if (id_product_type !== null) {
+            whereCondition.id_product_type = id_product_type;
+          }
+      
+          const results = await MachineType.findAll({
+            where: whereCondition
+          });
+      
+          return results;
         } catch (error) {
-            console.log(error);
+          console.log(error);
         }
-    }
+      }
+      
+    async  getMarca(id_product_type) {
+        try {
+          const whereCondition = {
+            status_id: 1
+          };
+      
+          if (id_product_type !== null) {
+            whereCondition.id_product_type = id_product_type;
+          }
+      
+          const results = await MarcaType.findAll({
+            where: whereCondition
+          });
+      
+          return results;
+        } catch (error) {
+          console.log(error);
+        }
+      }
+
+      async  getModel(id_product_type) {
+        try {
+          const whereCondition = {
+            status_id: 1
+          };
+      
+          if (id_product_type !== null) {
+            whereCondition.id_product_type = id_product_type;
+          }
+      
+          const results = await ModelType.findAll({
+            where: whereCondition
+          });
+      
+          return results;
+        } catch (error) {
+          console.log(error);
+        }
+      }
 }
 
 module.exports = CatalogoControllers;

@@ -321,9 +321,10 @@ class PubControllers {
                 attributes: [
                     'id_product',
                     'title',
-                    'description', 
+                    'status_id', 
+                    'description',  
                     [
-                        Products.sequelize.literal(`TO_CHAR(create_at, 'DD Mon YYYY, HH:MI am')`), 'create_at_formatted'
+                        Products.sequelize.literal(`TO_CHAR(create_at, 'DD MM YYYY, HH:MI am')`), 'create_at_formatted'
                     ],
                 ],
                 include: [
@@ -356,9 +357,7 @@ class PubControllers {
                         model: ProductImages,
                         as: 'product_images',
                         attributes: ['image_name'],
-                        order: [['path', 'ASC']],
-                        limit: 1
-
+                        order: [['path', 'ASC']],  
                     },
                     {
                         model: Users,
@@ -414,11 +413,20 @@ class PubControllers {
                     },{
                         model: PublicationType,
                         as: 'publication_type',
-                        attributes: ['type_pub']
+                        attributes: ['type_pub','description']
                     }, {
                         model: Category,
                         as: 'mainCategory'
-                    },
+                    },  {
+                        model: Users,
+                        attributes: ['id_user','id_type_user'],
+                        include: [
+                          {
+                            model: Profile,
+                            attributes: ['full_name','last_name'],
+                          }
+                        ]
+                      } 
                 ],
                 order: [
                     ['id_product', 'ASC']

@@ -43,8 +43,7 @@ router.get('/list_publications_panel_details', async (req, res) => {
         status = 200;
     } else {
         response.msg = 'No se encontraron publicaciones';
-    }
-
+    } 
 
     res.status(status).json(response);
 });
@@ -120,7 +119,9 @@ router.post('/register_product_details', authenticateToken, async (req, res) => 
         pay_now_delivery,
         facipay,
         contact_me,
-        region,city,factory_code,
+        region,
+        city,
+        factory_code,
     } = req.body;
 
  
@@ -318,7 +319,7 @@ router.get('/list_publications', async (req, res) => {
     res.status(status).json(response);
 });
 
-router.get('/list_publications_byuser', async (req, res) => {
+router.get('/list_publications_byuser',authenticateToken, async (req, res) => {
     const response = newResponseJson();
     let status = 200;
     const search = req.query.search ?? '';
