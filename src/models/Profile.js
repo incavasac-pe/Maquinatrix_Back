@@ -18,11 +18,11 @@ const Profile = sequelize.define('Profile', {
     },
     full_name: {
         type: DataTypes.STRING(100),
-        allowNull: false
+        allowNull: true
     }, 
     last_name: {
         type: DataTypes.STRING(150),
-        allowNull: false
+        allowNull: true
     },   
     id_type_doc:  {
         type: DataTypes.INTEGER,
@@ -30,7 +30,7 @@ const Profile = sequelize.define('Profile', {
     },
     num_doc:{
         type: DataTypes.STRING(15),
-        allowNull: false
+        allowNull: true
     },
     address:{
         type: DataTypes.STRING(255),

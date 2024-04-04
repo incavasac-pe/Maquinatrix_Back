@@ -5,8 +5,7 @@ const router = express.Router();
 const UserControllers = require('../controllers/users');
 const { newResponseJson } = require('./../responseUtils');
 const EmailSender = new require('../services/send_email');
-const emailSender = new EmailSender();
-var generator = require('generate-password');
+const emailSender = new EmailSender(); 
 
 require('dotenv').config();
 
@@ -20,7 +19,13 @@ router.post('/register_account', async (req, res) => {
    
 
     // Verificar si los campos requeridos no están vacíos o nulos
-    const requiredFields = ['id_type_user', 'status_id', 'email', 'password', 'firstname', 'lastname', 'type_doc', 'num_doc', 'address'];
+    //const requiredFields = ['id_type_user', 'status_id', 'email', 'password', 'firstname', 'lastname', 'type_doc', 'num_doc', 'address'];
+    const requiredFieldsByUserType = {
+        1: ['id_type_user', 'status_id', 'email', 'password', 'firstname', 'lastname', 'type_doc', 'num_doc', 'address'],
+        2: ['id_type_user', 'status_id', 'email', 'emailRepreLegal', 'password', 'rutCompany', 'FullNameRepreLegal', 'LastNameRepreLegal', 'RutRepreLegal'],       };
+      
+    const requiredFields = requiredFieldsByUserType[userData.id_type_user];
+    console.log("*******",requiredFields);
     const missingFields = requiredFields.filter(field => !userData[field]);
 
     if (missingFields.length > 0) { 
@@ -88,12 +93,14 @@ router.post('/login_account', async (req, res) => {
         return; // Terminar la ejecución aquí
     }
      
-    let full_name, photo, roles, id_roles,id_user_ext;
+    let full_name, razon_social,photo, roles, id_roles,id_user_ext;
     if (userData[0].Profile) {
-        full_name = userData[0].Profile.full_name + ' '+ userData[0].Profile.last_name;
+        full_name = userData[0].Profile.full_name !=null ? userData[0].Profile.full_name   + ' '+ userData[0].Profile.last_name : userData[0].Profile.FullNameRepreLegal + ' '+ userData[0].Profile.LastNameRepreLegal ;
+        razon_social = userData[0].Profile.FullNameRepreLegal + ' '+ userData[0].Profile.LastNameRepreLegal ;
         photo = userData[0].Profile.photo;
         id_user_ext = userData[0].Profile.id_user_ext;
     } else {
+        razon_social = null;
         full_name = null;
         photo = null;
         id_user_ext = null;
@@ -109,7 +116,7 @@ router.post('/login_account', async (req, res) => {
     const token = jwt.sign({   
         id_user ,
         email_User,
-        full_name,
+        full_name,        
         status_id 
     }, process.env.JWT_SECRET, { expiresIn: '24h' });
     response.error = false;
@@ -119,6 +126,7 @@ router.post('/login_account', async (req, res) => {
         status_id, 
         email_User,
         full_name,
+        razon_social,
         photo,
         id_user_ext,
         roles,
@@ -138,11 +146,11 @@ router.post('/generateDigPassword', async (req, res) => {
     const result = await new UserControllers().getUserByEmail(email);
 
     if (result == null) {
-        response.msg = `Usuario no existe`;
+        response.msg = `Correo electrónico no existe`;
         res.status(status).json(response)
     } else {
         const code = generateFourDigitCode();
-        const result_act = await new UserControllers().generateUserCode(email, code);
+        const result_act = await new UserControllers().generateUserCode(email, code); 
         if (result_act == 1) {
             emailSender.sendEmail(email, 'Resetear contraseña', code, 2).then(response_email => {
                 console.log('Correo enviado:', response_email);
@@ -190,8 +198,8 @@ router.post('/validateDigPassword', async (req, res) => {
 
 });
 
-
-router.post('/resetPassword', async (req, res) => {
+router.post('/resetPassword', async (req, res) => { 
+  
     const response = newResponseJson();
     let status = 400;
     response.error = true;
@@ -221,7 +229,6 @@ router.post('/resetPassword', async (req, res) => {
         }
     }
 });
-
 
 router.patch('/changePassword', async (req, res) => {
     const response = newResponseJson();
@@ -339,9 +346,7 @@ router.patch('/profile_basic_update',authenticateToken, async (req, res) => {
       }
    
 });
-
-
-
+ 
 router.patch('/profile_basic_update_1',authenticateToken, async (req, res) => {
 
     const response = newResponseJson();
@@ -377,9 +382,5 @@ function generateFourDigitCode() {
     const code = Math.floor(Math.random() * (max - min + 1)) + min;
     return code.toString();
 }
-
-
-
-  
-
+ 
 module.exports = router;

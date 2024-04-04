@@ -141,6 +141,8 @@ class UserControllers {
                         attributes: [
                             'full_name',
                             'last_name',
+                            'FullNameRepreLegal',
+                            'LastNameRepreLegal',
                             'id_user_ext'
                           ]
                     }
