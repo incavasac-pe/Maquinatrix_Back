@@ -84,7 +84,7 @@ router.post('/register_publication', authenticateToken, async (req, res) => {
 
     if (! flag) {
         result = await new PubControllers().registerPub(id_publication_type, id_category, status_id,id_product_type,id_machine,title,description,req.user.id_user);
-        console.LO
+     
         if (result != undefined) {
             response.error = false;
             response.msg = 'Publicación registrada exitosamente';

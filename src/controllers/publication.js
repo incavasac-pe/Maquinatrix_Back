@@ -445,7 +445,7 @@ class PubControllers {
                 where: {
                     id_product: id
                 },
-                attributes: ['image_name'],
+                attributes: ['image_name','cover'],
                 order: [['path', 'ASC']]
             });
     
