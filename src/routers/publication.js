@@ -254,6 +254,45 @@ router.post('/register_product_dimensions', authenticateToken, async (req, res) 
     } 
 });
 
+router.post('/register_product_rental', authenticateToken, async (req, res) => {
+    const response = newResponseJson();
+    let status = 400;
+    let flag = false;
+
+    const {
+       id_product,Scheduled_Maintenance,Supply_Maintenance ,Technical_Visit ,operational_certificate ,operational_certificate_date
+      ,operational_certificate_attachment,Insurance_Policy,Insurance_Policy_attachment ,delivery ,operator_included,rental_contract,rental_guarantee  } = req.body;
+ 
+    if (! flag) {
+        let result_up,
+            result_inser;
+
+       /* exist = await new PubControllers().getPublicationsDimensions(id_product);
+        if (exist.length > 0) {
+         result_up = await new PubControllers().updatePubDimensions( id_product,
+            section_width,  aspect_ratio,  rim_diameter,   extern_diameter,
+            load_index, speed_index, maximum_load,  maximum_speed,
+            utqg, wear_rate, traction_index, temperature_index,
+            runflat, terrain_type, tread_design,  type_of_service, vehicle_type, season,  land_type,  others );
+        } else {*/
+            result_inser = await new PubControllers().registerPubRental(  id_product,Scheduled_Maintenance,Supply_Maintenance ,Technical_Visit ,operational_certificate ,operational_certificate_date
+                ,operational_certificate_attachment,Insurance_Policy,Insurance_Policy_attachment ,delivery ,operator_included,rental_contract,rental_guarantee );
+        //}
+
+        if (result_inser != undefined || result_up == 1) {
+            response.error = false;
+            response.msg = 'Detalle de la publicación rental registrado exitosamente';
+            response.data = {
+                id_product_rental: id_product
+            };
+            status = 201;
+            res.status(status).json(response);
+        } else {
+            response.msg = 'Error al registrar el detalle rental de la publicación';
+            res.status(status).json(response);
+        }
+    } 
+});
 router.put('/update_publication_status', authenticateToken, async (req, res) => {
     const response = newResponseJson();
     let status = 400;

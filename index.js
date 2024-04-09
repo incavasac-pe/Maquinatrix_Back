@@ -19,6 +19,7 @@ require('./src/models/ProductImages.js');
 require('./src/models/ProductDetails.js');
 require('./src/models/ProductTechnical.js'); 
 require('./src/models/ProductDimensions.js'); 
+require('./src/models/ProductRental.js');
 require('./src/models/TypeUser.js');
 require('./src/models/ProductType.js');
 require('./src/models/MarcaType.js');
@@ -48,7 +49,7 @@ for (const route of routes)  {
 }
 sequelize.sync().then(() => {
   console.log('Tablas sincronizadas');
-  // insertData();
+    //insertData();
   app.listen(PORT, () => {
     console.log(`App running on port ${PORT}.`);
   });

@@ -4,6 +4,7 @@ const Products = require('../models/Products');
 const ProductDetails = require('../models/ProductDetails');
 const ProductTechnical = require('../models/ProductTechnical');
 const ProductDimensions = require('../models/ProductDimensions');
+const ProductRental = require('../models/ProductRental');
 const ProductImages = require('../models/ProductImages');
 const {Op} = require('sequelize');
 const Users = require('../models/User');
@@ -178,6 +179,27 @@ class PubControllers {
             console.log(error);
         }
     }
+
+    
+
+    async registerPubRental( id_product,Scheduled_Maintenance,Supply_Maintenance ,Technical_Visit ,operational_certificate ,operational_certificate_date
+        ,operational_certificate_attachment,Insurance_Policy,Insurance_Policy_attachment ,delivery ,operator_included,rental_contract,rental_guarantee ) {
+        try {
+            const result = await ProductRental.create({
+                id_product,Scheduled_Maintenance,
+                Supply_Maintenance ,Technical_Visit ,
+                operational_certificate ,operational_certificate_date
+                ,operational_certificate_attachment,Insurance_Policy,
+                Insurance_Policy_attachment ,delivery ,
+                operator_included,rental_contract,rental_guarantee 
+            });
+    
+            return result.id_product_rental;
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
 
     async getPublicationsDetails(id) {
         try {
