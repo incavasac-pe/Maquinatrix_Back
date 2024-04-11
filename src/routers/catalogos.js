@@ -65,7 +65,7 @@ router.get('/list_machine', async (req, res) => {
     let status = 200;
     const id_product_type = req.query.id_product_type ?? null;
     result = await new CatalogoControllers().getMachine(id_product_type);
-    if (result.length > 0) {
+    if (result?.length > 0) {
         response.error = false;
         response.msg = 'Tipo máquinas encontradas';
         response.count = result.length;

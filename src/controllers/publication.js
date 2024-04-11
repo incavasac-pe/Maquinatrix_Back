@@ -6,6 +6,8 @@ const ProductTechnical = require('../models/ProductTechnical');
 const ProductDimensions = require('../models/ProductDimensions');
 const ProductRental = require('../models/ProductRental');
 const ProductImages = require('../models/ProductImages');
+const MarcaType = require('../models/MarcaType');
+const ModelType = require('../models/ModelType');
 const {Op} = require('sequelize');
 const Users = require('../models/User');
 const Profile =  require('../models/Profile');
@@ -23,7 +25,14 @@ Products.hasOne(ProductDimensions, {
     foreignKey: 'id_product',
     as: 'product_dimension'
 });
- 
+ProductDetails.belongsTo(MarcaType, {
+    foreignKey: 'id_marca',
+    as: 'marca_type'
+});
+ProductDetails.belongsTo(ModelType, {
+    foreignKey: 'id_model',
+    as: 'model_type'
+});
 Products.belongsTo(PublicationType, {
     foreignKey: 'id_publication_type',
     as: 'publication_type'
@@ -407,9 +416,9 @@ class PubControllers {
             const results = await Products.findAll({
                 where: {
                     id_product: id,
-                    status_id: {
+                    /*status_id: {
                         [Op.ne]: 8
-                    }
+                    }*/
                 },
                 attributes: [
                     'id_product',
@@ -432,7 +441,9 @@ class PubControllers {
                     {
                         model: ProductDimensions,
                         as: 'product_dimension'
-                    },{
+                    }, 
+                   
+                    {
                         model: PublicationType,
                         as: 'publication_type',
                         attributes: ['type_pub','description']

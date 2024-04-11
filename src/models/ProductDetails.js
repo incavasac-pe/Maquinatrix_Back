@@ -41,27 +41,27 @@ const ProductDetails = sequelize.define('ProductDetails', {
     },
     factory_code: { //codigo de fabrica
         type: DataTypes.STRING(50),
-        allowNull: false
+        allowNull: true
     },
     mileage: {
         type: DataTypes.STRING(50),
-        allowNull: false
+        allowNull: true
     },
     engine_number: { //numero de motor
         type: DataTypes.STRING(50),
-        allowNull: false
+        allowNull: true
     },
     chasis_number: {//numero chasis
         type: DataTypes.STRING(50),
-        allowNull: false
+        allowNull: true
     },
     patent:{ //patente
         type: DataTypes.STRING(50),
-        allowNull: false
+        allowNull: true
     },
     warranty: {  //grantia
         type: DataTypes.STRING(50),
-        allowNull: false
+        allowNull: true
     },
     condition: { //condicion nuevo o usado
         type: DataTypes.STRING(50),
@@ -69,19 +69,19 @@ const ProductDetails = sequelize.define('ProductDetails', {
     },
     owner: { //dueño
         type: DataTypes.STRING(50),
-        allowNull: false
+        allowNull: true
     },
     delivery: { //despacho
         type: DataTypes.CHAR(1),
-        allowNull: false
+        allowNull: true
     },
     pay_now_delivery: {  
         type: DataTypes.CHAR(1),
-        allowNull: false
+        allowNull: true
     },
     facipay: {
         type: DataTypes.CHAR(1),
-        allowNull: false
+        allowNull: true
     },
      contact_me: {
         type: DataTypes.TEXT,
