@@ -54,7 +54,18 @@ const Products = sequelize.define('Products', {
     id_user: {
         type: DataTypes.INTEGER,
         allowNull: false
-    }
+    },
+    visitt: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+        default:0
+    },
+    interaction: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+        default:0
+    },
+     
 }, {
     tableName: 'products',
     timestamps: false

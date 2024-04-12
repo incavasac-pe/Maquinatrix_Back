@@ -408,6 +408,25 @@ router.get('/list_publications_byuser',authenticateToken, async (req, res) => {
     res.status(status).json(response);
 });
 
+router.put('/visity_public', async (req, res) => {
+    const response = newResponseJson();
+    let status = 200;
+  
+    const id_product = req.query.id_product ?? null;  
+
+    result = await new PubControllers().updatePublicationVisit(id_product) 
+    if (result?.length > 0) {
+        response.error = false;
+        response.msg = 'Publicacion visitada';
+        response.count = result.length;
+        response.data = result; 
+    } else {
+        response.msg = 'No se encontraron publicaciones';     
+    }
+
+    res.status(status).json(response);
+});
+
   function filterByBrand(data, brand) {
     return data.filter(item => item.product_details.brand == brand);
   }

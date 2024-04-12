@@ -311,7 +311,7 @@ class PubControllers {
     }
 
 
-    async getPublicationsPortal(search, tpublicacion, category, limit, price_max, price_min,region,id_user,status_id,recent) { 
+    async getPublicationsPortal(search, tpublicacion, category, limit, price_max, price_min,region,id_user,status_id) { 
         try {
             const whereClause = { }
             
@@ -352,7 +352,9 @@ class PubControllers {
                     'id_product',
                     'title',
                     'status_id', 
-                    'description',  
+                    'description', 
+                    'visitt',
+                    'interaction', 
                     [
                         Products.sequelize.literal(`TO_CHAR(create_at, 'DD MM YYYY, HH:MI am')`), 'create_at_formatted'
                     ],
@@ -516,6 +518,28 @@ class PubControllers {
             });
 
             return result
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    async updatePublicationVisit(id_product) {
+        try {
+            const product = await Products.findOne({
+                where: {
+                    id_product: id_product
+                }
+            });
+    
+            if (product) {
+                const updatedProduct = await product.update({
+                    visitt: product.visitt + 1
+                });
+    
+                return updatedProduct;
+            } else {
+                throw new Error('No se encontró el producto con el ID especificado');
+            }
         } catch (error) {
             console.log(error);
         }
