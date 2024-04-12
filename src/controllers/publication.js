@@ -311,7 +311,7 @@ class PubControllers {
     }
 
 
-    async getPublicationsPortal(search, tpublicacion, category, limit, price_max, price_min,region,id_user,status_id) { 
+    async getPublicationsPortal(search, tpublicacion, category, limit, price_max, price_min,region,id_user,status_id,recent) { 
         try {
             const whereClause = { }
             
@@ -320,7 +320,8 @@ class PubControllers {
             }
             if(id_user!= null){
                 whereClause.id_user = id_user;
-            }
+            } 
+            
             if (search) {
               whereClause[Op.or] = [
                 { title: { [Op.iLike]: `%${search}%` } }, 
@@ -338,15 +339,13 @@ class PubControllers {
 
             if (category) {
                 whereClause.id_category = category;
-            }
+            } 
+            let orderClause = ['id_product']; 
 
-            let orderClause = ['id_product'];
-
-
-            if (price_max) {
-                orderClause = [['product_details', 'price', 'ASC']];
-            } else if (price_min) {
+            if (price_min) {
                 orderClause = [['product_details', 'price', 'DESC']];
+            } if (price_max) {
+                orderClause = [['product_details', 'price', 'ASC']];
             } 
             const results = await Products.findAll({
                 attributes: [
@@ -416,9 +415,9 @@ class PubControllers {
             const results = await Products.findAll({
                 where: {
                     id_product: id,
-                    /*status_id: {
+                     status_id: {
                         [Op.ne]: 8
-                    }*/
+                    } 
                 },
                 attributes: [
                     'id_product',

@@ -343,9 +343,30 @@ router.get('/list_publications', async (req, res) => {
     const price_min = req.query ?. price_min ?? '';
     const region = req.query ?. region ?? '';
     const status_id = req.query.status_id ?? null;
+    const brand = req.query ?. brand ?? null;
+    const model = req.query ?. model ?? null;
+    const condition = req.query ?. condition ?? null;
+    const recent = req.query ?. recent ?? null;
 
-    result = await new PubControllers().getPublicationsPortal(search, tpublicacion, category, limit, price_max, price_min,region,null,status_id)
 
+    result = await new PubControllers().getPublicationsPortal(search, tpublicacion, category, limit, price_max, price_min,region,null,status_id,recent)
+    if(brand!= null){
+        result = await filterByBrand(result,brand);
+      console.log("result brand ",result)
+      }
+      if(model!= null){
+        result = await filterByModel(result,model);
+       console.log("result model",result)
+      }
+      if(condition!= null){
+        result = await filterByCondition(result,condition);
+        console.log("result condition",result)
+      }
+      if(condition!= null){
+        result = await filterByCondition(result,condition);
+        console.log("result condition",result)
+      }
+      
     if (result?.length > 0 ) {
         response.error = false;
         response.msg = 'Publicaciones encontradas para mostrar al portal';
@@ -370,9 +391,11 @@ router.get('/list_publications_byuser',authenticateToken, async (req, res) => {
     const region = req.query ?. region ?? '';
     const id_user = req.query?.id_user ?? null;
     const status_id = req.query.status_id ?? null;
+  
 
     result = await new PubControllers().getPublicationsPortal(search, tpublicacion, category, limit, price_max, price_min,region,id_user,status_id)
- 
+       
+  
     if (result?.length > 0  ) {
         response.error = false;
         response.msg = 'Publicaciones encontradas';
@@ -385,4 +408,14 @@ router.get('/list_publications_byuser',authenticateToken, async (req, res) => {
     res.status(status).json(response);
 });
 
+  function filterByBrand(data, brand) {
+    return data.filter(item => item.product_details.brand == brand);
+  }
+  function filterByModel(data, model) {
+    return data.filter(item => item.product_details.model == model);
+  }
+  function filterByCondition(data, condition) {
+    return data.filter(item => item.product_details.condition == condition);
+  }
+   
 module.exports = router;

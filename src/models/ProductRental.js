@@ -33,7 +33,7 @@ const ProductRental = sequelize.define('ProductRental', {
       allowNull: true
     },
     operational_certificate_date: {
-      type: DataTypes.DATE,
+      type: DataTypes.STRING(255),
       allowNull: true
     },
     operational_certificate_attachment: {
