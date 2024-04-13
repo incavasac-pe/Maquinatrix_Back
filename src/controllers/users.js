@@ -112,10 +112,18 @@ class UserControllers {
         }
     }
 
-    async validateCredencials(email, password) {
+    async validateCredencials(email, password,flag_credentials) {
         let response
         try {
             const hashedPassword = crypto.createHash('md5').update(password).digest('hex'); 
+            let whereCondition = {
+              email: email
+            };
+            
+            if (flag_credentials!=0) {
+               whereCondition.password = hashedPassword;
+            }
+            console.log("whereConditionwhereConditionwhereCondition",whereCondition)
             const results = await Users.findAll({
                 attributes: [
                     'id_user',
@@ -147,10 +155,7 @@ class UserControllers {
                           ]
                     }
                 ],
-                where: {
-                    email: email,
-                    password: hashedPassword
-                }
+                where: whereCondition
             });
             response = results
 

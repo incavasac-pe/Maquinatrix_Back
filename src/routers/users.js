@@ -22,8 +22,8 @@ router.post('/register_account', async (req, res) => {
     //const requiredFields = ['id_type_user', 'status_id', 'email', 'password', 'firstname', 'lastname', 'type_doc', 'num_doc', 'address'];
     const requiredFieldsByUserType = {
         1: ['id_type_user', 'status_id', 'email', 'password', 'firstname', 'lastname', 'type_doc', 'num_doc', 'address'],
-        2: ['id_type_user', 'status_id', 'email', 'emailRepreLegal', 'password', 'rutCompany', 'FullNameRepreLegal', 'LastNameRepreLegal', 'RutRepreLegal'],       };
-      
+        2: ['id_type_user', 'status_id', 'email', 'emailRepreLegal', 'password', 'rutCompany', 'FullNameRepreLegal', 'LastNameRepreLegal', 'RutRepreLegal'],  };
+        
     const requiredFields = requiredFieldsByUserType[userData.id_type_user];
     console.log("*******",requiredFields);
     const missingFields = requiredFields.filter(field => !userData[field]);
@@ -34,21 +34,32 @@ router.post('/register_account', async (req, res) => {
     }
     result = await new UserControllers().createUser(userData,uniqueID);
     if (result && !result.error) {
+
         const token = jwt.sign({ email: userData.email }, process.env.JWT_SECRET, { expiresIn: '1h' });
-        emailSender.sendEmail(userData.email, 'Registro de cuenta', token, 3).then(response_email => {
-            console.log('Correo enviado:', response_email);
-            response.error = false;
-            response.msg = `Registro exitoso, se ha enviado al correo el link de validación.`;
-            status = 201;
-            delete result.password;
-            response.data =  result
-            
-            res.status(status).json(response);
-        }).catch(error => {
-            response.msg = `Error al enviar el correo`;
-            console.log('Error al enviar el correo:', error);
-            res.status(status).json(response)
-        });
+        if(userData.credencials===1){
+            emailSender.sendEmail(userData.email, 'Registro de cuenta', token, 3).then(response_email => {
+                    console.log('Correo enviado:', response_email);
+                    response.error = false;
+                    response.msg = `Registro exitoso, se ha enviado al correo el link de validación.`;
+                    status = 201;
+                    delete result.password;
+                    response.data =  result
+                    
+                    res.status(status).json(response);
+                }).catch(error => {
+                    response.msg = `Error al enviar el correo`;
+                    console.log('Error al enviar el correo:', error);
+                    res.status(status).json(response)
+                });
+            }else{
+                response.error = false;
+                response.msg = `Registro exitoso redes.`;
+                status = 201;
+                delete result.password;
+                response.data =  result
+                
+                res.status(status).json(response);
+            }
 
     } else {
         response.msg = result.msg;
@@ -63,7 +74,7 @@ router.post('/login_account', async (req, res) => {
     let flag = false;
     const userDataBody = req.body;
        // Verificar si los campos requeridos no están vacíos o nulos
-       const requiredFields = ['email', 'password'];
+       const requiredFields = ['email', 'password',];
        const missingFields = requiredFields.filter(field => !userDataBody[field]);
    
        if (missingFields.length > 0) { 
@@ -79,7 +90,7 @@ router.post('/login_account', async (req, res) => {
         return; // Terminar la ejecución aquí
     }
   
-    userData = await new UserControllers().validateCredencials(userDataBody.email, userDataBody.password);  
+    userData = await new UserControllers().validateCredencials(userDataBody.email, userDataBody.password,userDataBody.credencials);  
     if (userData.length == 0) {
         response.msg = `Credenciales inválidas`;
         res.status(status).json(response);
@@ -137,6 +148,7 @@ router.post('/login_account', async (req, res) => {
     res.status(status).json(response);
 });
 
+ 
 router.post('/generateDigPassword', async (req, res) => {
     const response = newResponseJson();
     let status = 400;

@@ -17,27 +17,27 @@ const ProductDetails = sequelize.define('ProductDetails', {
     },
     region: {
         type: DataTypes.STRING(50),
-        allowNull: false
+        allowNull: true
     },
     city: {
         type: DataTypes.STRING(100),
-        allowNull: false
+        allowNull: true
     },
     price: {
         type: DataTypes.STRING(50),
-        allowNull: false
+        allowNull: true
     },
     brand: { //marca
         type: DataTypes.STRING(255),
-        allowNull: false
+        allowNull: true
     },
     model: { //modelo
         type: DataTypes.STRING(255),
-        allowNull: false
+        allowNull: true
     },
     year: { //año
         type: DataTypes.STRING(10),
-        allowNull: false
+        allowNull: true
     },
     factory_code: { //codigo de fabrica
         type: DataTypes.STRING(50),

@@ -32,7 +32,7 @@ const Users = sequelize.define('Users', {
     },
     id_type_user: {
         type: DataTypes.INTEGER,
-        allowNull: false
+        allowNull: true
     },
 }, {
     tableName: 'users',
