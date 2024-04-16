@@ -17,7 +17,7 @@ router.post('/upload_image', async (req, res) => {
     const id_product = req.query.id_product;
     const cover = req.query.cover ?? false;
     const orden = req.query.orden;
-    let EDFile = req.files.file;
+    let EDFile = req.files?.file;
  
    
     //const newFileName = concatenateWithNumber(EDFile.name); // Aquí debes implementar la lógica para generar el nuevo nombre de archivo

@@ -37,7 +37,9 @@ router.post('/register_account', async (req, res) => {
 
         const token = jwt.sign({ email: userData.email }, process.env.JWT_SECRET, { expiresIn: '1h' });
         if(userData.credencials===1){
-            emailSender.sendEmail(userData.email, 'Registro de cuenta', token, 3).then(response_email => {
+            const profile = await new UserControllers().getProfileUser(userData.email );       
+            const nameProfile = profile.full_name + ' ' + profile.last_name;
+            emailSender.sendEmail(userData.email, 'Registro de cuenta', token, 3,nameProfile).then(response_email => {
                     console.log('Correo enviado:', response_email);
                     response.error = false;
                     response.msg = `Registro exitoso, se ha enviado al correo el link de validación.`;
@@ -80,8 +82,7 @@ router.post('/login_account', async (req, res) => {
        if (missingFields.length > 0) { 
            response.msg = `Los siguientes campos son requeridos: ${missingFields.join(', ')}`;
            return res.status(status).send(response)
-       }
-
+       } 
 
     let validEmail = /^\w+([.-_+]?\w+)*@\w+([.-]?\w+)*(\.\w{2,10})+$/;  
     if (!validEmail.test(userDataBody.email)) {
@@ -161,10 +162,12 @@ router.post('/generateDigPassword', async (req, res) => {
         response.msg = `Correo electrónico no existe`;
         res.status(status).json(response)
     } else {
+        const profile = await new UserControllers().getProfileUser(email);       
+        const nameProfile = profile.full_name + ' ' + profile.last_name;
         const code = generateFourDigitCode();
         const result_act = await new UserControllers().generateUserCode(email, code); 
         if (result_act == 1) {
-            emailSender.sendEmail(email, 'Resetear contraseña', code, 2).then(response_email => {
+            emailSender.sendEmail(email, 'Resetear contraseña', code, 2,nameProfile).then(response_email => {
                 console.log('Correo enviado:', response_email);
                 response.error = false;
                 response.msg = `Se envio el código al correo.`;

@@ -26,7 +26,7 @@ class EmailSender {
       });
   }
 
-    sendEmail(to, subject, data, type) {
+    sendEmail(to, subject, data, type,name) {
         let html;
         if (type == 1) {
             html = `<!DOCTYPE html>
@@ -39,31 +39,57 @@ class EmailSender {
         </body>
         </html>`
         } else if(type == 2) {
-            html = `<!DOCTYPE html>
+                        html = `
+         <!DOCTYPE html>
             <html>
             <head>
                 <meta name="viewport" content="width=device-width">
                 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">     
             </head>
             <body>
-            <h1>Recuperar contraseña</h1>
-            <p>Se ha generado el código : <b> ${data}</b> </p>       
+                <div style="font-family: Arial, sans-serif; max-width:700px; margin: 0 auto;">
+                    <h2>Hola, ${name}</h2>
+                    
+                    <p>¿Olvidaste tu contraseña de Maquinatrix? No hay problema. Sólo tienes que escribir el código de más abajo en el formulario de recuperación de contraseña.</p>
+                    
+                    <p><strong>Código: ${data}</strong></p>
+                    
+                    <p>¿Recordaste tu contraseña y ya no necesitas restablecerla? Siéntete libre de ignorar este correo electrónico. Tu contraseña no será cambiada.</p>
+                    
+                    <p>Te saluda,</p>
+                    
+                    <p><strong>Equipo Maquinatrix</strong></p>
+                </div>
             </body>
-            </html>`
+            </html>
+            `
         } else if(type == 3) {
             const activationLink = 'http://localhost/Maquinatrix_frontend/login.php?token='+data;
             const paragraph = `<p>Se ha realizado el registro de tu cuenta maquinatrix, activa tu cuenta haciendo clic <a href="${activationLink}"><b>aquí</b></a>.</p>`;
             html = `<!DOCTYPE html>
-        <html>
-        <head>
-            <meta name="viewport" content="width=device-width">
-            <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">     
-        </head>
-        <body>
-        <h1>Registro de cuenta Maquinatrix</h1>
-        ${paragraph}  
-        </body>
-        </html>`
+            <html>
+            <head>
+                <meta charset="UTF-8">
+                <title>Registro exitoso</title>
+            </head>
+            <body>
+                <div style="font-family: Arial, sans-serif; max-width: 700px; margin: 0 auto;">
+                    <h2>Hola, ${name}</h2>
+                    
+                    <p>¡Felicidades! Te has registrado exitosamente a Maquinatrix. Activa tu cuenta haciendo clic <a href="${activationLink}"><b>aquí</b></a>.</p> 
+
+                    <p>Queremos desearte lo mejor en tus futuros negocios con la comunidad y que disfrutes de un marketplace hecho a la medida para tus necesidades.</p>
+                    
+                    <p>Averigua más sobre nosotros y nuestros servicios en nuestra página corporativa:</p>
+                    
+                    <p><a href="https://maquinatrix.company/">https://maquinatrix.company/</a></p>
+                    
+                    <p>Te saluda,</p>
+                    
+                    <p><strong>Equipo Maquinatrix</strong></p>
+                </div>
+            </body>
+            </html>`
         }
 
         const mailOptions = {

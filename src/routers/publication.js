@@ -35,7 +35,7 @@ router.get('/list_publications_panel_details', async (req, res) => {
 
     result = await new PubControllers().getPublicationsPanelDetails(id);
 
-    if (result.length > 0) {
+    if (result?.length > 0) {
         response.error = false;
         response.msg = 'Publicaciones detalles encontradas';
         response.count = result.length;
