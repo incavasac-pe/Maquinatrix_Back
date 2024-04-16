@@ -15,7 +15,7 @@ router.get('/list_publications_panel', async (req, res) => {
 
     result = await new PubControllers().getPublicationsPanel(search, tpublicacion, category, fcreacion,region)
 
-    if (result.length > 0) {
+    if (result?.length > 0) {
         response.error = false;
         response.msg = 'Publicaciones encontradas';
         response.count = result.length;
@@ -55,7 +55,7 @@ router.get('/list_publications_imagen', async (req, res) => {
     const id = req.query.id;
     result = await new PubControllers().getPublicationsDetailsImagen(id)
 
-    if (result.length > 0) {
+    if (result?.length > 0) {
         response.error = false;
         response.msg = 'Publicaciones imagenes encontradas';
         response.count = result.length;
@@ -76,7 +76,7 @@ router.post('/register_publication', authenticateToken, async (req, res) => {
     const {id_publication_type, id_category, status_id,id_product_type,id_machine,title,description} = req.body;
 
     // Validar los datos de entrada
-    if (title.trim() == '' || description.trim() == ''|| status_id == null || id_publication_type == null || id_product_type == null
+    if (title.trim() == '' || status_id == null || id_publication_type == null || id_product_type == null
     || id_machine == null || id_category== null ) {
         flag = true;
         response.msg = 'Faltan campos por completar';
