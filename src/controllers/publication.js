@@ -25,6 +25,10 @@ Products.hasOne(ProductDimensions, {
     foreignKey: 'id_product',
     as: 'product_dimension'
 });
+Products.hasOne(ProductRental, {
+    foreignKey: 'id_product',
+    as: 'product_rental'
+});
 ProductDetails.belongsTo(MarcaType, {
     foreignKey: 'id_marca',
     as: 'marca_type'
@@ -443,7 +447,10 @@ class PubControllers {
                         model: ProductDimensions,
                         as: 'product_dimension'
                     }, 
-                   
+                    {
+                        model: ProductRental,
+                        as: 'product_rental'
+                    }, 
                     {
                         model: PublicationType,
                         as: 'publication_type',
