@@ -65,7 +65,7 @@ const ProductDetails = sequelize.define('ProductDetails', {
     },
     condition: { //condicion nuevo o usado
         type: DataTypes.STRING(50),
-        allowNull: false
+        allowNull: true
     },
     owner: { //dueño
         type: DataTypes.STRING(50),

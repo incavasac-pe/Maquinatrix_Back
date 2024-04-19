@@ -31,8 +31,7 @@ router.get('/list_publications_panel', async (req, res) => {
 router.get('/list_publications_panel_details', async (req, res) => {
     const response = newResponseJson();
     let status = 400;
-    const id = req.query.id;
-
+    const id = req.query.id; 
     result = await new PubControllers().getPublicationsPanelDetails(id);
 
     if (result?.length > 0) {
@@ -54,7 +53,15 @@ router.get('/list_publications_imagen', async (req, res) => {
     let status = 200;
     const id = req.query.id;
     result = await new PubControllers().getPublicationsDetailsImagen(id)
-
+    result?.sort((a, b) => {
+        if (a.cover && !b.cover) {
+          return -1; 
+        } else if (!a.cover && b.cover) {
+          return 1;
+        } else {
+          return 0; 
+        }
+      });
     if (result?.length > 0) {
         response.error = false;
         response.msg = 'Publicaciones imagenes encontradas';
@@ -414,15 +421,15 @@ router.put('/visity_public', async (req, res) => {
   
     const id_product = req.query.id_product ?? null;  
 
-    result = await new PubControllers().updatePublicationVisit(id_product) 
-    if (result?.length > 0) {
+    result = await new PubControllers().updatePublicationVisit(id_product)
+    if (!result) {
+         response.msg = 'No se encontraron publicaciones';  
+    }else{   
         response.error = false;
         response.msg = 'Publicacion visitada';
         response.count = result.length;
         response.data = result; 
-    } else {
-        response.msg = 'No se encontraron publicaciones';     
-    }
+    }  
 
     res.status(status).json(response);
 });

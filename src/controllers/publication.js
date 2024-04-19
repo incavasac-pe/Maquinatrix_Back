@@ -545,7 +545,7 @@ class PubControllers {
     
                 return updatedProduct;
             } else {
-                throw new Error('No se encontró el producto con el ID especificado');
+               return false;
             }
         } catch (error) {
             console.log(error);
