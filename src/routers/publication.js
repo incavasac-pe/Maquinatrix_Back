@@ -129,6 +129,8 @@ router.post('/register_product_details', authenticateToken, async (req, res) => 
         region,
         city,
         factory_code,
+        id_model,
+        id_marca
     } = req.body;
 
  
@@ -138,9 +140,9 @@ router.post('/register_product_details', authenticateToken, async (req, res) => 
 
         exist = await new PubControllers().getPublicationsDetails(id_product);
         if (exist.length > 0) {
-            result_up = await new PubControllers().updatePublicationDetail(id_product, price, brand, model, year, condition, mileage, engine_number, warranty, owner, delivery, pay_now_delivery,facipay,contact_me,chasis_number,patent,region,city,factory_code);
+            result_up = await new PubControllers().updatePublicationDetail(id_product, price, brand, model, year, condition, mileage, engine_number, warranty, owner, delivery, pay_now_delivery,facipay,contact_me,chasis_number,patent,region,city,factory_code, id_model,id_marca);
         } else {
-            result_inser = await new PubControllers().registerPubDetails(id_product, price, brand, model, year, condition, mileage, engine_number, warranty, owner, delivery, pay_now_delivery,facipay,contact_me,chasis_number,patent,region,city,factory_code);
+            result_inser = await new PubControllers().registerPubDetails(id_product, price, brand, model, year, condition, mileage, engine_number, warranty, owner, delivery, pay_now_delivery,facipay,contact_me,chasis_number,patent,region,city,factory_code, id_model,id_marca);
         }
 
         if (result_inser != undefined || result_up == 1) {
@@ -420,8 +422,9 @@ router.put('/visity_public', async (req, res) => {
     let status = 200;
   
     const id_product = req.query.id_product ?? null;  
+    const type = req.query.type ?? null;  
 
-    result = await new PubControllers().updatePublicationVisit(id_product)
+    result = await new PubControllers().updatePublicationVisit(id_product,type)
     if (!result) {
          response.msg = 'No se encontraron publicaciones';  
     }else{   

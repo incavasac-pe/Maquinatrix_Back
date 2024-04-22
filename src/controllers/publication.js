@@ -87,7 +87,7 @@ class PubControllers {
         }
     }
 
-    async registerPubDetails(id_product, price, brand, model, year, condition, mileage, engine_number, warranty, owner, delivery, pay_now_delivery,facipay,contact_me,chasis_number,patent,region,city,factory_code) {
+    async registerPubDetails(id_product, price, brand, model, year, condition, mileage, engine_number, warranty, owner, delivery, pay_now_delivery,facipay,contact_me,chasis_number,patent,region,city,factory_code, id_model,id_marca) {
         try {
             const result = await ProductDetails.create({
                 id_product: id_product,
@@ -108,7 +108,9 @@ class PubControllers {
                 patent: patent,
                 region:region,
                 city:city,
-                factory_code: factory_code               
+                factory_code: factory_code,
+                id_model:id_model,
+                id_marca:id_marca             
             });
 
             return result.id_product_details;
@@ -530,20 +532,25 @@ class PubControllers {
         }
     }
 
-    async updatePublicationVisit(id_product) {
+    async updatePublicationVisit(id_product,type) {
         try {
             const product = await Products.findOne({
                 where: {
                     id_product: id_product
                 }
             });
-    
+            let updatedProduct;
             if (product) {
-                const updatedProduct = await product.update({
+                if(type==1){
+                  updatedProduct = await product.update({
                     visitt: product.visitt + 1
                 });
-    
-                return updatedProduct;
+                }else{
+                updatedProduct = await product.update({
+                    interaction: product.interaction + 1
+                });
+            }
+            return updatedProduct;
             } else {
                return false;
             }
@@ -573,7 +580,9 @@ class PubControllers {
                 patent:patent,
                 region:region,
                 city:city,
-                factory_code:factory_code
+                factory_code:factory_code,
+                id_model:id_model,
+                id_marca:id_marca       
             }, {
                 where: {
                     id_product: id_product
