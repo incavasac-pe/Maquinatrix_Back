@@ -16,13 +16,12 @@ router.post('/register_account', async (req, res) => {
     const userData = req.body;
     const uniqueID = await new UserControllers().generateUniqueIDWithValidation();   
      console.log('ID único generado:', uniqueID);
-   
-
+ 
     // Verificar si los campos requeridos no están vacíos o nulos
     //const requiredFields = ['id_type_user', 'status_id', 'email', 'password', 'firstname', 'lastname', 'type_doc', 'num_doc', 'address'];
     const requiredFieldsByUserType = {
         1: ['id_type_user', 'status_id', 'email', 'password', 'firstname', 'lastname', 'type_doc', 'num_doc', 'address'],
-        2: ['id_type_user', 'status_id', 'email', 'emailRepreLegal', 'password', 'rutCompany', 'FullNameRepreLegal', 'LastNameRepreLegal', 'RutRepreLegal'],  };
+        2: ['id_type_user', 'status_id', 'email', 'razon_social','emailRepreLegal', 'password', 'rutCompany', 'FullNameRepreLegal', 'LastNameRepreLegal', 'RutRepreLegal'],  };
         
     const requiredFields = requiredFieldsByUserType[userData.id_type_user];
     console.log("*******",requiredFields);
@@ -35,10 +34,10 @@ router.post('/register_account', async (req, res) => {
     result = await new UserControllers().createUser(userData,uniqueID);
     if (result && !result.error) {
 
-        const token = jwt.sign({ email: userData.email }, process.env.JWT_SECRET, { expiresIn: '1h' });
+        const token = jwt.sign({ email: userData.email.toLowerCase() }, process.env.JWT_SECRET, { expiresIn: '1h' });
         if(userData.credencials===1){
-            const profile = await new UserControllers().getProfileUser(userData.email );       
-            const nameProfile = profile.full_name + ' ' + profile.last_name;
+            const profile = await new UserControllers().getProfileUser(userData.email?.toLowerCase());       
+            const nameProfile = userData.id_type_user == 1 ? profile.full_name + ' ' + profile.last_name : profile.razon_social;
             emailSender.sendEmail(userData.email, 'Registro de cuenta', token, 3,nameProfile).then(response_email => {
                     console.log('Correo enviado:', response_email);
                     response.error = false;
@@ -85,13 +84,13 @@ router.post('/login_account', async (req, res) => {
        } 
 
     let validEmail = /^\w+([.-_+]?\w+)*@\w+([.-]?\w+)*(\.\w{2,10})+$/;  
-    if (!validEmail.test(userDataBody.email)) {
+    if (!validEmail.test(userDataBody.email.toLowerCase())) {
         response.msg = `Correo electrónico inválido`;
         res.status(status).json(response);
         return; // Terminar la ejecución aquí
     }
   
-    userData = await new UserControllers().validateCredencials(userDataBody.email, userDataBody.password,userDataBody.credencials);  
+    userData = await new UserControllers().validateCredencials(userDataBody.email?.toLowerCase(), userDataBody.password,userDataBody.credencials);  
     if (userData.length == 0) {
         response.msg = `Credenciales inválidas`;
         res.status(status).json(response);
@@ -149,6 +148,25 @@ router.post('/login_account', async (req, res) => {
     res.status(status).json(response);
 });
 
+
+router.post('/validateEmail', async (req, res) => {
+    const response = newResponseJson();
+    let status = 400;
+    response.error = true;
+
+    const { email } = req.body 
+    const result = await new UserControllers().getUserByEmail(email.toLowerCase());
+
+    if (result) {
+        response.msg = `El correo electrónico ya está registrado.`;
+        res.status(status).json(response)
+    }else{
+        response.error = false;
+        response.msg = `El correo electrónico no existe.`;
+        status = 200
+        res.status(status).json(response)
+    }   
+});
  
 router.post('/generateDigPassword', async (req, res) => {
     const response = newResponseJson();
@@ -156,16 +174,16 @@ router.post('/generateDigPassword', async (req, res) => {
     response.error = true;
 
     const { email } = req.body
-    const result = await new UserControllers().getUserByEmail(email);
+    const result = await new UserControllers().getUserByEmail(email.toLowerCase());
 
     if (result == null) {
         response.msg = `Correo electrónico no existe`;
         res.status(status).json(response)
     } else {
-        const profile = await new UserControllers().getProfileUser(email);       
+        const profile = await new UserControllers().getProfileUser(email.toLowerCase());       
         const nameProfile = profile.full_name + ' ' + profile.last_name;
         const code = generateFourDigitCode();
-        const result_act = await new UserControllers().generateUserCode(email, code); 
+        const result_act = await new UserControllers().generateUserCode(email.toLowerCase(), code); 
         if (result_act == 1) {
             emailSender.sendEmail(email, 'Resetear contraseña', code, 2,nameProfile).then(response_email => {
                 console.log('Correo enviado:', response_email);
@@ -192,14 +210,14 @@ router.post('/validateDigPassword', async (req, res) => {
     response.error = true;
 
     const { email, code } = req.body
-    const result = await new UserControllers().getUserByEmail(email);
+    const result = await new UserControllers().getUserByEmail(email.toLowerCase());
 
     if (result == null) {
         response.msg = `Usuario no existe`;
         res.status(status).json(response)
     }
 
-    const result_code = await new UserControllers().getUserByCode(email, code)
+    const result_code = await new UserControllers().getUserByCode(email.toLowerCase(), code)
     if (result_code !== null) {
         response.error = false;
         response.msg = `Código validado.`;
@@ -225,7 +243,7 @@ router.post('/resetPassword', async (req, res) => {
         response.msg = 'Las contraseñas no coinciden';
         res.status(status).json(response);
     } else {
-        const result = await new UserControllers().getUserByEmail(email);
+        const result = await new UserControllers().getUserByEmail(email.toLowerCase());
 
         if (result == null) {
             response.msg = 'Usuario no existe';
@@ -281,7 +299,7 @@ router.get('/activate_account', async (req, res) => {
         const decoded = jwt.verify(token, process.env.JWT_SECRET)
         const email = decoded.email;
 
-        const result = await new UserControllers().getUserByEmail(email);
+        const result = await new UserControllers().getUserByEmail(email.toLowerCase());
         if (result == null) {
             response.msg = `Usuario no existe`;
             res.status(status).json(response)
@@ -313,13 +331,13 @@ router.get('/profile_basic',authenticateToken, async (req, res) => {
         response.error = true; 
         const email = req.user.email_User ?? '';
 
-        const result = await new UserControllers().getUserByEmail(email);
+        const result = await new UserControllers().getUserByEmail(email.toLowerCase());
         if (result == null) {
             response.msg = `Usuario no existe`;
             res.status(status).json(response)
         } else {
              
-            const result_profile = await new UserControllers().getProfileUser(email); 
+            const result_profile = await new UserControllers().getProfileUser(email.toLowerCase()); 
             if (result_profile) {
                 response.error = false;
                 response.msg = `Datos basicos del usuario`;

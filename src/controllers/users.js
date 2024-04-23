@@ -66,7 +66,7 @@ class UserControllers {
             // Verificar si el correo electrónico ya está registrado
             const existingUser = await Users.findOne({
                 where: {
-                    email: userData.email
+                    email: userData.email.toLowerCase()
                 }
             });
 
@@ -76,7 +76,7 @@ class UserControllers {
             const hashedPassword = crypto.createHash('md5').update(userData.password).digest('hex');
             // Crear el nuevo usuario
             const newUser = await Users.create({
-                email: userData.email,
+                email: userData.email.toLowerCase(),
                 password:hashedPassword,
                 status_id: userData.status_id,
                 id_type_user: userData.id_type_user,
@@ -102,7 +102,7 @@ class UserControllers {
                 FullNameRepreLegal: userData.FullNameRepreLegal ,
                 LastNameRepreLegal: userData.LastNameRepreLegal ,
                 RutRepreLegal: userData.RutRepreLegal ,
-                emailRepreLegal: userData.emailRepreLegal  
+                emailRepreLegal: userData.emailRepreLegal?.toLowerCase()
             });  
          } 
          return newUser 
