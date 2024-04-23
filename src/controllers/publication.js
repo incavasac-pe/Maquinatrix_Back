@@ -6,6 +6,7 @@ const ProductTechnical = require('../models/ProductTechnical');
 const ProductDimensions = require('../models/ProductDimensions');
 const ProductRental = require('../models/ProductRental');
 const ProductImages = require('../models/ProductImages');
+const ProductArchivos = require('../models/ProductArchivos');
 const MarcaType = require('../models/MarcaType');
 const ModelType = require('../models/ModelType');
 const {Op} = require('sequelize');
@@ -58,7 +59,10 @@ ProductImages.belongsTo(Products, {
     foreignKey: 'id_product',
     as: 'product_images'
 });
-
+ProductArchivos.belongsTo(Products, {
+    foreignKey: 'id_product',
+    as: 'product_archivo'
+});
 Products.hasOne(Users, {
     foreignKey: 'id_user',
     as: 'users'
@@ -656,6 +660,34 @@ class PubControllers {
             return false;
         }
     }
+    
+    async registerArchivo(archivo_name, id_product,path) {
+        try { 
+            const existingImage = await ProductArchivos.findOne({ where: { path, id_product } });    
+            if (existingImage) { 
+                const result = await ProductArchivos.update(
+                    { creation_date: new Date() },
+                    { where: { archivo_name, id_product } }
+                );
+    
+                return result;
+            } else {
+                // el pdf no existe, realizar una inserción 
+                const result = await ProductArchivos.create({
+                    id_product: id_product,
+                    archivo_name: archivo_name,
+                    path:path, 
+                    creation_date: new Date()
+                });
+    
+                return result;
+            }
+        } catch (error) { 
+            return false;
+          
+        }
+    }
+    
 
 }
 

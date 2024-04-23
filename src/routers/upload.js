@@ -8,7 +8,8 @@ const fs = require('fs');
 //const webp = require('webp-converter'); 
 //const sharp = require('sharp');
 const _dirname = './public/uploads';
- 
+const _dirname_pdf = './public/uploads_pdf';
+
 router.post('/upload_image', async (req, res) => {
     const response = newResponseJson();
     response.error = false;
@@ -56,6 +57,55 @@ router.post('/upload_image', async (req, res) => {
       res.status(status).json(response);
     });
   
+  });
+ 
+
+  router.post('/upload_pdf', async (req, res) => {
+    const response = newResponseJson();
+    response.error = false;
+    response.msg = 'Carga exitosa';
+    let status = 200;
+    const id_product = req.query.id_product;
+    const type = req.query.type;
+    const newFileName = req.files?.file?.name;
+    const pdfFile = req.files?.file;
+   
+    // Verificar si se proporcionó un archivo PDF
+    if (!pdfFile || !newFileName.endsWith('.pdf')) {
+      response.error = true;
+      status = 400;
+      response.msg = 'No se proporcionó un archivo PDF válido';
+      return res.status(status).json(response);
+    }
+  
+    // Mover el archivo PDF a la carpeta de destino
+    const uploadPath = path.join(_dirname_pdf);
+    const filePath = path.join(uploadPath, newFileName);
+  
+    pdfFile.mv(filePath, async (err) => {
+      if (err) {
+        console.error(err);
+        response.error = true;
+        status = 500;
+        response.msg = 'Error al subir el archivo PDF';
+      } else {
+        try {
+          const result_img =  await new PubControllers().registerArchivo(newFileName, id_product,type);
+          if(!result_img){
+            response.error = false;
+            status = 500;
+            response.msg = 'error al pdf en la BD';
+          }
+        } catch (error) {
+          console.error(error);
+          response.error = true;
+          status = 500;
+          response.msg = 'Error al procesar el archivo PDF';
+        }
+      }
+  
+      res.status(status).json(response);
+    });
   });
 
   async function convertToWebP(inputPath, outputPath) {
