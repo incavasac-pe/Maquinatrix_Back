@@ -77,7 +77,17 @@ router.post('/upload_image', async (req, res) => {
       response.msg = 'No se proporcionó un archivo PDF válido';
       return res.status(status).json(response);
     }
-  
+      // Verificar el tamaño del archivo
+      const fileSizeInBytes = pdfFile.size;
+      const fileSizeInMB = fileSizeInBytes / (1024 * 1024); // Convertir a MB
+      const maxFileSizeInMB = 1;
+    
+      if (fileSizeInMB > maxFileSizeInMB) {
+        response.error = true;
+        status = 400;
+        response.msg = `El archivo excede el tamaño máximo permitido (${maxFileSizeInMB} MB)`;
+        return res.status(status).json(response);
+      }
     // Mover el archivo PDF a la carpeta de destino
     const uploadPath = path.join(_dirname_pdf);
     const filePath = path.join(uploadPath, newFileName);

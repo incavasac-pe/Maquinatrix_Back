@@ -16,6 +16,7 @@ require('./src/models/UserVerify.js');
 require('./src/models/UserRoles.js');
 require('./src/models/Products.js');
 require('./src/models/ProductImages.js');
+require('./src/models/ProductArchivos.js');
 require('./src/models/ProductDetails.js');
 require('./src/models/ProductTechnical.js'); 
 require('./src/models/ProductDimensions.js'); 

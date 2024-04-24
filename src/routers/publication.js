@@ -360,21 +360,15 @@ router.get('/list_publications', async (req, res) => {
 
     result = await new PubControllers().getPublicationsPortal(search, tpublicacion, category, limit, price_max, price_min,region,null,status_id,recent)
     if(brand!= null){
-        result = await filterByBrand(result,brand);
-      console.log("result brand ",result)
+        result = await filterByBrand(result,brand); 
       }
       if(model!= null){
-        result = await filterByModel(result,model);
-       console.log("result model",result)
+        result = await filterByModel(result,model); 
       }
       if(condition!= null){
-        result = await filterByCondition(result,condition);
-        console.log("result condition",result)
+        result = await filterByCondition(result,condition); 
       }
-      if(condition!= null){
-        result = await filterByCondition(result,condition);
-        console.log("result condition",result)
-      }
+     
       
     if (result?.length > 0 ) {
         response.error = false;
@@ -438,13 +432,14 @@ router.put('/visity_public', async (req, res) => {
 });
 
   function filterByBrand(data, brand) {
-    return data.filter(item => item.product_details.brand == brand);
+    return data.filter(item => item.product_details.id_marca == brand);
   }
   function filterByModel(data, model) {
-    return data.filter(item => item.product_details.model == model);
+    return data.filter(item => item.product_details.id_modelmodel == model);
   }
   function filterByCondition(data, condition) {
     return data.filter(item => item.product_details.condition == condition);
   }
    
+  
 module.exports = router;
