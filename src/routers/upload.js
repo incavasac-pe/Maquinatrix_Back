@@ -80,7 +80,7 @@ router.post('/upload_image', async (req, res) => {
       // Verificar el tamaño del archivo
       const fileSizeInBytes = pdfFile.size;
       const fileSizeInMB = fileSizeInBytes / (1024 * 1024); // Convertir a MB
-      const maxFileSizeInMB = 1;
+      const maxFileSizeInMB = 20;
     
       if (fileSizeInMB > maxFileSizeInMB) {
         response.error = true;
