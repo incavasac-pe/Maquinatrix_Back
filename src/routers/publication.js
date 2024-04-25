@@ -356,9 +356,13 @@ router.get('/list_publications', async (req, res) => {
     const model = req.query ?. model ?? null;
     const condition = req.query ?. condition ?? null;
     const recent = req.query ?. recent ?? null;
+    const yearstart =  req.query ?. yearstart ?? null;
+    const id_machine = req.query ?. id_machine ?? null;
+    const id_product_type = req.query ?. id_product_type ?? null; 
 
 
-    result = await new PubControllers().getPublicationsPortal(search, tpublicacion, category, limit, price_max, price_min,region,null,status_id,recent)
+    result = await new PubControllers().getPublicationsPortal(search, tpublicacion, category, limit, price_max, price_min,region,null,status_id,recent,id_machine,id_product_type)
+    console.log("qweqweqwe",result);
     if(brand!= null){
         result = await filterByBrand(result,brand); 
       }
@@ -368,7 +372,12 @@ router.get('/list_publications', async (req, res) => {
       if(condition!= null){
         result = await filterByCondition(result,condition); 
       }
-     
+      if(yearstart!=null){
+        const [startYear, endYear] = yearstart?.split("-");
+         result = result.filter((result1) => {
+         return result1.product_details.year >= startYear && result1.product_details.year <= endYear;
+        });
+      }
       
     if (result?.length > 0 ) {
         response.error = false;

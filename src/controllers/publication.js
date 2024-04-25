@@ -321,7 +321,7 @@ class PubControllers {
     }
 
 
-    async getPublicationsPortal(search, tpublicacion, category, limit, price_max, price_min,region,id_user,status_id) { 
+    async getPublicationsPortal(search, tpublicacion, category, limit, price_max, price_min,region,id_user,status_id,recent,id_machine,id_product_type) { 
         try {
             const whereClause = { }
             
@@ -350,12 +350,19 @@ class PubControllers {
             if (category) {
                 whereClause.id_category = category;
             } 
+            if (id_machine) {
+                whereClause.id_machine = id_machine;
+            } 
+            if (id_product_type) {
+                whereClause.id_product_type = id_product_type;
+            } 
+                      
             let orderClause = ['id_product']; 
 
             if (price_min) {
-                orderClause = [['product_details', 'price', 'DESC']];
-            } if (price_max) {
                 orderClause = [['product_details', 'price', 'ASC']];
+            } if (price_max) {
+                orderClause = [['product_details', 'price', 'DESC']];
             } 
             const results = await Products.findAll({
                 attributes: [
@@ -375,7 +382,13 @@ class PubControllers {
                         as: 'product_details',
                         attributes: {
                             exclude: ['id_product']
-                        }
+                        },
+                       /* where: {
+                            year: {
+                                [Op.gte]: '2022',
+                                [Op.lte]: '2023'
+                            }
+                        }*/
                     }, 
                     {
                         model: ProductTechnical,
