@@ -28,9 +28,5 @@ const TypeUser = sequelize.define('TypeUser', {
     timestamps: false
 });
 
-TypeUser.belongsTo(Status, {
-    foreignKey: 'status_id',
-    targetKey: 'id_status'
-});
 
 module.exports = TypeUser;

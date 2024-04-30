@@ -12,7 +12,7 @@ const ProductArchivos = sequelize.define('ProductArchivos', {
         autoIncrement: true
     },
     id_product: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.INTEGER, 
         allowNull: false
     },
     archivo_name: {
@@ -31,7 +31,6 @@ const ProductArchivos = sequelize.define('ProductArchivos', {
     tableName: 'product_archivo',
     timestamps: false
 });
-
+ 
 ProductArchivos.belongsTo(Products, {foreignKey: 'id_product'});
-
 module.exports = ProductArchivos;

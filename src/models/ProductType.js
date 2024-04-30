@@ -24,9 +24,5 @@ const ProductType = sequelize.define('ProductType', {
     timestamps: false
 });
 
-ProductType.belongsTo(Status, {
-    foreignKey: 'status_id',
-    targetKey: 'id_status'
-});
 
 module.exports = ProductType;

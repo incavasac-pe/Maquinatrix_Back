@@ -29,10 +29,5 @@ const MarcaType = sequelize.define('MarcaType', {
     timestamps: false
 });
 
-MarcaType.belongsTo(Status, {
-    foreignKey: 'status_id',
-    targetKey: 'id_status'
-});
-MarcaType.belongsTo(Status, {foreignKey: 'status_id'});
-MarcaType.belongsTo(ProductType, {foreignKey: 'id_product_type'}); 
+ 
 module.exports = MarcaType;

@@ -28,10 +28,4 @@ const MachineType = sequelize.define('MachineType', {
     timestamps: false
 });
 
-MachineType.belongsTo(Status, {
-    foreignKey: 'status_id',
-    targetKey: 'id_status'
-});
-MachineType.belongsTo(Status, {foreignKey: 'status_id'});
-MachineType.belongsTo(ProductType, {foreignKey: 'id_product_type'}); 
 module.exports = MachineType;

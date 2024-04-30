@@ -32,5 +32,5 @@ PublicationType.belongsTo(Status, {
     foreignKey: 'status_id',
     targetKey: 'id_status'
 });
-
+PublicationType.belongsTo(Status, {foreignKey: 'status_id'});  
 module.exports = PublicationType;
