@@ -180,10 +180,11 @@ router.post('/generateDigPassword', async (req, res) => {
         response.msg = `Correo electrónico no existe`;
         res.status(status).json(response)
     } else {
-        const profile = await new UserControllers().getProfileUser(email.toLowerCase());       
-        const nameProfile = profile.full_name + ' ' + profile.last_name;
+        const profile = await new UserControllers().getProfileUser(email.toLowerCase());  
+        const nameProfile = result.id_type_user == 1 ? profile.full_name + ' ' + profile.last_name : profile.razon_social;           
         const code = generateFourDigitCode();
         const result_act = await new UserControllers().generateUserCode(email.toLowerCase(), code); 
+        
         if (result_act == 1) {
             emailSender.sendEmail(email, 'Resetear contraseña', code, 2,nameProfile).then(response_email => {
                 console.log('Correo enviado:', response_email);

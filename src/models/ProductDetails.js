@@ -87,6 +87,15 @@ const ProductDetails = sequelize.define('ProductDetails', {
         type: DataTypes.TEXT,
         allowNull: true
     },
+    id_marca: {
+        type: DataTypes.INTEGER,
+        allowNull: true
+    },
+    id_model: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+        default:1
+    },
 }, {
     tableName: 'product_details',
     timestamps: false

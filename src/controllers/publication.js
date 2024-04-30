@@ -321,7 +321,51 @@ class PubControllers {
     }
 
 
-    async getPublicationsPortal(search, tpublicacion, category, limit, price_max, price_min,region,id_user,status_id,recent,id_machine,id_product_type) { 
+    async getPublicationsPortalCount(search, tpublicacion, category, status_id,id_machine,id_product_type) { 
+        try {
+            const whereClause = { }
+            
+            if(status_id!= null){
+                whereClause.status_id = status_id;
+            }
+         
+            if (search) {
+              whereClause[Op.or] = [
+                { title: { [Op.iLike]: `%${search}%` } }, 
+              ];
+            } 
+
+            if (tpublicacion) {
+                whereClause.id_publication_type = tpublicacion;
+            }
+
+            if (category) {
+                whereClause.id_category = category;
+            } 
+            if (id_machine) {
+                whereClause.id_machine = id_machine;
+            } 
+            if (id_product_type) {
+                whereClause.id_product_type = id_product_type;
+            } 
+                      
+            let orderClause = ['id_product']; 
+ 
+            const results = await Products.findAll({
+                attributes: [
+                    'id_product', 
+                ],
+               
+                where: whereClause,
+                order: orderClause
+            }); 
+            return results;
+        } catch (error) {
+            console.log(error);
+            return false
+        }
+    }
+    async getPublicationsPortal(search, tpublicacion, category, limit, price_max, price_min,region,id_user,status_id,recent,id_machine,id_product_type,offset) { 
         try {
             const whereClause = { }
             
@@ -361,8 +405,8 @@ class PubControllers {
 
             if (price_min) {
                 orderClause = [['product_details', 'price', 'ASC']];
-            } if (price_max) {
-                orderClause = [['product_details', 'price', 'DESC']];
+            } if (recent) {
+                orderClause = [[ 'id_product', 'DESC']];
             } 
             const results = await Products.findAll({
                 attributes: [
@@ -382,13 +426,7 @@ class PubControllers {
                         as: 'product_details',
                         attributes: {
                             exclude: ['id_product']
-                        },
-                       /* where: {
-                            year: {
-                                [Op.gte]: '2022',
-                                [Op.lte]: '2023'
-                            }
-                        }*/
+                        }, 
                     }, 
                     {
                         model: ProductTechnical,
@@ -426,7 +464,8 @@ class PubControllers {
                 ],
                 where: whereClause,
                 order: orderClause,
-                limit: limit
+                limit: limit,
+                offset:offset
             }); 
             return results;
         } catch (error) {
@@ -483,7 +522,7 @@ class PubControllers {
                         include: [
                           {
                             model: Profile,
-                            attributes: ['full_name','last_name'],
+                            attributes: ['full_name','last_name','razon_social'],
                           }
                         ]
                       } 

@@ -359,10 +359,12 @@ router.get('/list_publications', async (req, res) => {
     const yearstart =  req.query ?. yearstart ?? null;
     const id_machine = req.query ?. id_machine ?? null;
     const id_product_type = req.query ?. id_product_type ?? null; 
+    const offset = req.query ?. offset ?? null; 
 
+    const count =   await new PubControllers().getPublicationsPortalCount(search, tpublicacion, category, status_id,id_machine,id_product_type)
 
-    result = await new PubControllers().getPublicationsPortal(search, tpublicacion, category, limit, price_max, price_min,region,null,status_id,recent,id_machine,id_product_type)
-    console.log("qweqweqwe",result);
+    result = await new PubControllers().getPublicationsPortal(search, tpublicacion, category, limit, price_max, price_min,region,null,status_id,recent,id_machine,id_product_type,offset)
+   
     if(brand!= null){
         result = await filterByBrand(result,brand); 
       }
@@ -379,10 +381,10 @@ router.get('/list_publications', async (req, res) => {
         });
       }
       
-    if (result?.length > 0 ) {
+    if (result?.length > 0  ) {
         response.error = false;
         response.msg = 'Publicaciones encontradas para mostrar al portal';
-        response.count = result.length;
+        response.count = count.length;
         response.data = result; 
     } else {
         response.msg = 'No se encontraron publicaciones';     
@@ -403,11 +405,10 @@ router.get('/list_publications_byuser',authenticateToken, async (req, res) => {
     const region = req.query ?. region ?? '';
     const id_user = req.query?.id_user ?? null;
     const status_id = req.query.status_id ?? null;
-  
+    const offset = req.query ?. offset ?? 1;  
 
-    result = await new PubControllers().getPublicationsPortal(search, tpublicacion, category, limit, price_max, price_min,region,id_user,status_id)
-       
-  
+    result = await new PubControllers().getPublicationsPortal(search, tpublicacion, category, limit, price_max, price_min,region,id_user,status_id,null,null,null,offset)
+ 
     if (result?.length > 0  ) {
         response.error = false;
         response.msg = 'Publicaciones encontradas';
@@ -444,7 +445,7 @@ router.put('/visity_public', async (req, res) => {
     return data.filter(item => item.product_details.id_marca == brand);
   }
   function filterByModel(data, model) {
-    return data.filter(item => item.product_details.id_modelmodel == model);
+    return data.filter(item => item.product_details.model == model);
   }
   function filterByCondition(data, condition) {
     return data.filter(item => item.product_details.condition == condition);
