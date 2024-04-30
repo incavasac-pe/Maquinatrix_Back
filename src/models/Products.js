@@ -9,8 +9,7 @@ const Users = require('./User');
 const PublicationType = require('./PublicationType');
 const MachineType = require('./MachineType');
 const ProductType = require('./ProductType');
-const Profile = require('./Profile');
-
+  
 const Products = sequelize.define('Products', {
     id_product: {
         type: DataTypes.INTEGER,

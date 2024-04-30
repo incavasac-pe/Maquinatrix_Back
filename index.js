@@ -4,8 +4,8 @@ const cors = require("cors");
 const app = express();
 require('dotenv').config();
 const fileUpload = require('express-fileupload');
-const sequelize = require('./src/config/conexionDB');
-
+//const sequelize = require('./src/config/conexionDB');
+/*
 require('./src/models/Status.js');
 require('./src/models/User.js');
 require('./src/models/Category.js');
@@ -26,7 +26,7 @@ require('./src/models/ProductType.js');
 require('./src/models/MarcaType.js');
 require('./src/models/MachineType.js');
 
-const insertData = require('./src/models/insertData.js');
+const insertData = require('./src/models/insertData.js');*/
 
 const PORT = process.env.PORT || 3500;
 

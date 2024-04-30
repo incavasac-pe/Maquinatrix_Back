@@ -34,7 +34,7 @@ const Profile = sequelize.define('Profile', {
     },
     address:{
         type: DataTypes.STRING(255),
-        allowNull: false
+        allowNull: true
     },
     razon_social:{
         type: DataTypes.STRING(100),

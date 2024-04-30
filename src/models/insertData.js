@@ -16,19 +16,9 @@ const insertData = async () => {
                 status_id: 1
             }, {
                 id_type_doc: 2,
-                type_doc: 'PASAPORTE', 
+                type_doc: 'Pasaporte', 
                 status_id: 1
-            },
-            {
-                id_type_doc: 3,
-                type_doc: 'RUT EMPRESA', 
-                status_id: 1
-            },
-            {
-                id_type_doc: 4,
-                type_doc: 'RUT REPRESENTANTE LEGAL', 
-                status_id: 1
-            }
+            }, 
         ]);
          // Insertar registros en la tabla 'TypeUser'
          await TypeUser.bulkCreate([
@@ -150,7 +140,7 @@ const insertData = async () => {
             }
         ]);
 
-        // Insertar registros en la tabla 'users'
+      /*  // Insertar registros en la tabla 'users'
         await Users.bulkCreate([{
                 id_user: 1,
                 email: 'norbelysnaguanagua21@gmail.com',
@@ -162,7 +152,7 @@ const insertData = async () => {
         await UserRoles.bulkCreate([{
                 id_user: 1,
                 id_role: 1
-            }]);
+            }]);*/
 
         console.log('Datos insertados correctamente.');
     } catch (error) {
