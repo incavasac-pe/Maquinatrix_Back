@@ -13,12 +13,12 @@ module.exports = {
       onDelete: 'SET NULL'
     });
 
-    await queryInterface.addColumn('products', 'id_marca', {
+    await queryInterface.addColumn('products', 'id_machine', {
       type: Sequelize.INTEGER,
       allowNull: true,
       references: {
-        model: 'marca_type',
-        key: 'id_marca'
+        model: 'machine_type',
+        key: 'id_machine'
       },
       onUpdate: 'CASCADE',
       onDelete: 'SET NULL'
@@ -34,20 +34,13 @@ module.exports = {
       type: Sequelize.INTEGER,
       allowNull: true,
       defaultValue: 0
-    });
-
-    await queryInterface.addColumn('products', 'createdAt', {
-      type: Sequelize.DATE,
-      allowNull: false,
-      defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
-    });
+    }); 
   },
 
   down: async (queryInterface, Sequelize) => {
     await queryInterface.removeColumn('products', 'id_product_type');
-    await queryInterface.removeColumn('products', 'id_marca');
+    await queryInterface.removeColumn('products', 'id_machine');
     await queryInterface.removeColumn('products', 'visitt');
     await queryInterface.removeColumn('products', 'interaction');
-    await queryInterface.removeColumn('products', 'createdAt');
   }
 };

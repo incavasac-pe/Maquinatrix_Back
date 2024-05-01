@@ -365,18 +365,18 @@ router.get('/list_publications', async (req, res) => {
 
     result = await new PubControllers().getPublicationsPortal(search, tpublicacion, category, limit, price_max, price_min,region,null,status_id,recent,id_machine,id_product_type,offset)
    
-    if(brand!= null){
+    if(brand!= null && brand!='Marca' ){
         result = await filterByBrand(result,brand); 
       }
-      if(model!= null){
+      if(model!= null && model!='' ){
         result = await filterByModel(result,model); 
       }
-      if(condition!= null){
+      if(condition!= null && condition!= ''){
         result = await filterByCondition(result,condition); 
       }
-      if(yearstart!=null){
+      if(yearstart!=null && yearstart!=''){
         const [startYear, endYear] = yearstart?.split("-");
-         result = result.filter((result1) => {
+         result = result?.filter((result1) => {
          return result1.product_details.year >= startYear && result1.product_details.year <= endYear;
         });
       }
@@ -405,7 +405,7 @@ router.get('/list_publications_byuser',authenticateToken, async (req, res) => {
     const region = req.query ?. region ?? '';
     const id_user = req.query?.id_user ?? null;
     const status_id = req.query.status_id ?? null;
-    const offset = req.query ?. offset ?? 1;  
+    const offset = req.query ?. offset ?? 0;  
 
     result = await new PubControllers().getPublicationsPortal(search, tpublicacion, category, limit, price_max, price_min,region,id_user,status_id,null,null,null,offset)
  
@@ -442,7 +442,7 @@ router.put('/visity_public', async (req, res) => {
 });
 
   function filterByBrand(data, brand) {
-    return data.filter(item => item.product_details.id_marca == brand);
+    return data.filter(item => item.product_details.brand == brand );
   }
   function filterByModel(data, model) {
     return data.filter(item => item.product_details.model == model);

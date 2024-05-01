@@ -10,8 +10,7 @@ const Users = sequelize.define('Users', {
         type: DataTypes.INTEGER,
         allowNull: false,
         primaryKey: true,
-        autoIncrement: true
-        
+        autoIncrement: true       
     },
     email: {
         type: DataTypes.STRING(255),

@@ -76,11 +76,13 @@ class UserControllers {
             const hashedPassword = crypto.createHash('md5').update(userData.password).digest('hex');
             // Crear el nuevo usuario
             const newUser = await Users.create({
-                email: userData.email.toLowerCase(),
-                password:hashedPassword,
-                status_id: userData.status_id,
-                id_type_user: userData.id_type_user,
-            }); 
+              email: userData.email.toLowerCase(),
+              password: hashedPassword,
+              status_id: userData.status_id,
+              id_type_user: userData.id_type_user,
+            }, {
+              fields: ['email', 'password', 'status_id', 'id_type_user']  
+            });
             await UserRoles.create({
                 id_user:newUser.id_user,
                 id_role:3, 
@@ -102,7 +104,10 @@ class UserControllers {
                 FullNameRepreLegal: userData.FullNameRepreLegal ,
                 LastNameRepreLegal: userData.LastNameRepreLegal ,
                 RutRepreLegal: userData.RutRepreLegal ,
-                emailRepreLegal: userData.emailRepreLegal?.toLowerCase()
+                emailRepreLegal: userData.emailRepreLegal?.toLowerCase()}
+                , {
+                  fields: ['id_user', 'id_user_ext', 'full_name', 'last_name','id_type_doc', 'address', 'razon_social', 'rutCompany','photo', 'FullNameRepreLegal',
+                   'LastNameRepreLegal', 'RutRepreLegal','emailRepreLegal']                
             });  
          } 
          return newUser 

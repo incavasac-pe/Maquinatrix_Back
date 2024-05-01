@@ -74,7 +74,8 @@ class PubControllers {
     {
         try {
             const result = await Products.create({
-                title: title,                
+                title: title,  
+                location:'location',            
                 description :description,
                 id_publication_type: id_publication_type,
                 id_category: id_category,
@@ -369,19 +370,19 @@ class PubControllers {
         try {
             const whereClause = { }
             
-            if(status_id!= null){
+            if(status_id!= null ){
                 whereClause.status_id = status_id;
             }
             if(id_user!= null){
                 whereClause.id_user = id_user;
             } 
             
-            if (search) {
+            if (search && search!='') {
               whereClause[Op.or] = [
                 { title: { [Op.iLike]: `%${search}%` } }, 
               ];
             }
-            if (region) {
+            if (region && region!='0') {
                 whereClause.location = {
                     [Op.iLike]: `%${region}%`                  
                }; 
@@ -391,13 +392,13 @@ class PubControllers {
                 whereClause.id_publication_type = tpublicacion;
             }
 
-            if (category) {
+            if (category && category!='0') {
                 whereClause.id_category = category;
             } 
-            if (id_machine) {
+            if (id_machine && category!='0') {
                 whereClause.id_machine = id_machine;
             } 
-            if (id_product_type) {
+            if (id_product_type && id_product_type!='0') {
                 whereClause.id_product_type = id_product_type;
             } 
                       
@@ -416,6 +417,7 @@ class PubControllers {
                     'description', 
                     'visitt',
                     'interaction', 
+                    'location',
                     [
                         Products.sequelize.literal(`TO_CHAR(create_at, 'DD MM YYYY, HH:MI am')`), 'create_at_formatted'
                     ],
@@ -486,7 +488,8 @@ class PubControllers {
                 attributes: [
                     'id_product',
                     'title',
-                    'description',                     
+                    'description',  
+                    'location',                 
                     [
                         Products.sequelize.fn('TO_CHAR', Products.sequelize.col('create_at'), 'DD Mon YYYY, HH:MI am'),
                         'create_at_formatted'
