@@ -80,7 +80,7 @@ router.post('/register_publication', authenticateToken, async (req, res) => {
     let status = 400;
     let flag = false;
 
-    const {id_publication_type, id_category, status_id,id_product_type,id_machine,title,description} = req.body;
+    const {id_product,id_publication_type, id_category, status_id,id_product_type,id_machine,title,description} = req.body;
 
     // Validar los datos de entrada
     if (title.trim() == '' || status_id == null || id_publication_type == null || id_product_type == null
@@ -89,9 +89,11 @@ router.post('/register_publication', authenticateToken, async (req, res) => {
         response.msg = 'Faltan campos por completar';
     }
 
-    if (! flag) {
+    if (! flag && id_product== null) {
         result = await new PubControllers().registerPub(id_publication_type, id_category, status_id,id_product_type,id_machine,title,description,req.user.id_user);
-     
+    }else{
+        result = await new PubControllers().updatePub(id_product, id_publication_type, id_category,  id_product_type, id_machine, title, description);
+    }
         if (result != undefined) {
             response.error = false;
             response.msg = 'Publicación registrada exitosamente';
@@ -102,7 +104,7 @@ router.post('/register_publication', authenticateToken, async (req, res) => {
         } else {
             response.msg = 'Error al registrar la publicación';
         }
-    }
+    
     res.status(status).json(response);
 });
 
@@ -138,8 +140,11 @@ router.post('/register_product_details', authenticateToken, async (req, res) => 
         let result_up,
             result_inser;
 
-        exist = await new PubControllers().getPublicationsDetails(id_product);
+       let exist = await new PubControllers().getPublicationsDetails(id_product);
+       //
+        console.log("edicion",exist)
         if (exist.length > 0) {
+            console.log("actua",exist)
             result_up = await new PubControllers().updatePublicationDetail(id_product, price, brand, model, year, condition, mileage, engine_number, warranty, owner, delivery, pay_now_delivery,facipay,contact_me,chasis_number,patent,region,city,factory_code, id_model,id_marca);
         } else {
             result_inser = await new PubControllers().registerPubDetails(id_product, price, brand, model, year, condition, mileage, engine_number, warranty, owner, delivery, pay_now_delivery,facipay,contact_me,chasis_number,patent,region,city,factory_code, id_model,id_marca);
@@ -177,7 +182,7 @@ router.post('/register_product_technical', authenticateToken, async (req, res) =
 
         exist = await new PubControllers().getPublicationsTechnical(id_product);
         if (exist.length > 0) {
-         result_up = await new PubControllers().updatePubTechnical( id_product,weight,power,displacement,torque,mixed_consumption,transmission,fuel,traction,km_traveled,hrs_traveled );
+         result_up = await new PubControllers().updatePubTechnical(id_product,weight,power,displacement,torque,mixed_consumption,transmission,fuel,traction,km_traveled,hrs_traveled);
         } else {
             result_inser = await new PubControllers().registerPubTechnical( id_product,weight,power,displacement,torque,mixed_consumption,transmission,fuel,traction,km_traveled,hrs_traveled);
         }
@@ -235,10 +240,10 @@ router.post('/register_product_dimensions', authenticateToken, async (req, res) 
         exist = await new PubControllers().getPublicationsDimensions(id_product);
         if (exist.length > 0) {
          result_up = await new PubControllers().updatePubDimensions( id_product,
-            section_width,  aspect_ratio,  rim_diameter,   extern_diameter,
-            load_index, speed_index, maximum_load,  maximum_speed,
-            utqg, wear_rate, traction_index, temperature_index,
-            runflat, terrain_type, tread_design,  type_of_service, vehicle_type, season,  land_type,  others );
+            section_width, aspect_ratio,  rim_diameter, extern_diameter,load_index,
+            speed_index, maximum_load,  maximum_speed,utqg, wear_rate,
+            traction_index,  temperature_index,  runflat, terrain_type, tread_design,type_of_service, vehicle_type,
+            season, land_type, others );
         } else {
             result_inser = await new PubControllers().registerPubDimensions( id_product,
                 section_width,   aspect_ratio,  rim_diameter, extern_diameter,load_index,
@@ -276,17 +281,14 @@ router.post('/register_product_rental', authenticateToken, async (req, res) => {
         let result_up,
             result_inser;
 
-       /* exist = await new PubControllers().getPublicationsDimensions(id_product);
+        exist = await new PubControllers().getPublicationsRental(id_product);
         if (exist.length > 0) {
-         result_up = await new PubControllers().updatePubDimensions( id_product,
-            section_width,  aspect_ratio,  rim_diameter,   extern_diameter,
-            load_index, speed_index, maximum_load,  maximum_speed,
-            utqg, wear_rate, traction_index, temperature_index,
-            runflat, terrain_type, tread_design,  type_of_service, vehicle_type, season,  land_type,  others );
-        } else {*/
+         result_up = await new PubControllers().updatePubRental(id_product,Scheduled_Maintenance,Supply_Maintenance ,Technical_Visit ,operational_certificate ,operational_certificate_date
+            ,operational_certificate_attachment,Insurance_Policy,Insurance_Policy_attachment ,delivery ,operator_included,rental_contract,rental_guarantee);
+        } else { 
             result_inser = await new PubControllers().registerPubRental(  id_product,Scheduled_Maintenance,Supply_Maintenance ,Technical_Visit ,operational_certificate ,operational_certificate_date
                 ,operational_certificate_attachment,Insurance_Policy,Insurance_Policy_attachment ,delivery ,operator_included,rental_contract,rental_guarantee );
-        //}
+            }
 
         if (result_inser != undefined || result_up == 1) {
             response.error = false;
