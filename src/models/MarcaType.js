@@ -1,32 +1,33 @@
-// models/Roles.js
+// models/PublicationType.js
 
 const {DataTypes} = require('sequelize');
 const sequelize = require('../config/conexionDB');
 const Status = require('./Status');
+const ProductType = require('./ProductType');
 
-const TypeUser = sequelize.define('TypeUser', {
-    id_type_user: {
+const MarcaType = sequelize.define('MarcaType', {
+    id_marca: {
         type: DataTypes.INTEGER,
         allowNull: false,
         primaryKey: true,
         autoIncrement: true
     },
-    type_user: {
-        type: DataTypes.STRING(10),
-        allowNull: false
-    },
+    id_product_type: {
+        type: DataTypes.INTEGER,
+        allowNull: false,  
+    },   
     description: {
-        type: DataTypes.STRING(255),
-        allowNull: false
+        type: DataTypes.TEXT,
+        allowNull: true
     },
     status_id: {
         type: DataTypes.INTEGER,
         allowNull: false
     }
 }, {
-    tableName: 'type_user',
+    tableName: 'marca_type',
     timestamps: false
 });
 
-
-module.exports = TypeUser;
+ 
+module.exports = MarcaType;

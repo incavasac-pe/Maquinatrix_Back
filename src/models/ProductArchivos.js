@@ -4,26 +4,21 @@ const {DataTypes} = require('sequelize');
 const sequelize = require('../config/conexionDB');
 const Products = require('./Products');
 
-const ProductImages = sequelize.define('ProductImages', {
-    id_image: {
+const ProductArchivos = sequelize.define('ProductArchivos', {
+    id_archivo: {
         type: DataTypes.INTEGER,
         allowNull: false,
         primaryKey: true,
         autoIncrement: true
     },
     id_product: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.INTEGER, 
         allowNull: false
     },
-    image_name: {
+    archivo_name: {
         type: DataTypes.STRING(255),
         allowNull: true
-    },
-    cover: {
-        type: DataTypes.BOOLEAN,
-        default:false,
-        allowNull: true
-    },
+    },   
     path: {
         type: DataTypes.STRING(255),
         allowNull: true
@@ -33,10 +28,9 @@ const ProductImages = sequelize.define('ProductImages', {
         allowNull: true
     }
 }, {
-    tableName: 'product_images',
+    tableName: 'product_archivo',
     timestamps: false
 });
-
-ProductImages.belongsTo(Products, {foreignKey: 'id_product'});
-
-module.exports = ProductImages;
+ 
+ProductArchivos.belongsTo(Products, {foreignKey: 'id_product'});
+module.exports = ProductArchivos;
