@@ -696,7 +696,13 @@ class PubControllers {
                                 attributes: ['full_name', 'last_name', 'razon_social'],
                             }
                         ]
-                    }
+                    },
+                    {
+                        model: ProductImages,
+                        as: 'product_images',
+                        attributes: ['image_name'],
+                        order: [['path', 'ASC']],
+                    },
                 ],
                 order: [
                     ['id_product', 'ASC']

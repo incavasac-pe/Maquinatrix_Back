@@ -89,7 +89,7 @@ router.post('/register_publication', authenticateToken, async (req, res) => {
         response.msg = 'Faltan campos por completar';
     }
 
-    if (! flag && id_product== null) {
+    if (! flag && (id_product== null || id_product== '' )) {
         result = await new PubControllers().registerPub(id_publication_type, id_category, status_id,id_product_type,id_machine,title,description,req.user.id_user);
     }else{
         result = await new PubControllers().updatePub(id_product, id_publication_type, id_category,  id_product_type, id_machine, title, description);
