@@ -629,7 +629,7 @@ class PubControllers {
                     }, {
                         model: ProductImages,
                         as: 'product_images',
-                        attributes: ['image_name'],
+                        attributes: ['image_name','cover'],
                         order: [['path', 'ASC']],
                     },
                     {
