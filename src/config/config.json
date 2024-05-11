@@ -14,10 +14,10 @@
     "dialect": "postgres"
   },
   "production": {
-    "username": "${USER_DATABASE}",
-    "password": "${PASSWORD_DATABASE}",
-    "database": "${NAME_DATABASE}",
-    "host": "${HOST_DATABASE}",
+    "username": "postgres",
+    "password": "awcxirnhfgjsdfzl",
+    "database": "MaquinatrixDBPROD",
+    "host": "137.184.117.191",
     "dialect": "postgres"
   }
 }
