@@ -64,9 +64,8 @@ class EmailSender {
             </html>
             `
         } else if(type == 3) {
-            const activationLink = 'http://localhost/Maquinatrix_frontend/login.php?token='+data;
-            const paragraph = `<p>Se ha realizado el registro de tu cuenta maquinatrix, activa tu cuenta haciendo clic <a href="${activationLink}"><b>aquí</b></a>.</p>`;
-            html = `<!DOCTYPE html>
+            const activationLink = 'https://maquinatrix.com/login.php?token='+data;
+              html = `<!DOCTYPE html>
             <html>
             <head>
                 <meta charset="UTF-8">
