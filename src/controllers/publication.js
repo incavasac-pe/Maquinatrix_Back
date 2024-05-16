@@ -506,14 +506,13 @@ class PubControllers {
 
             if (status_id != null) {
                 whereClause.status_id = status_id;
-            }
-
+            } 
+            
             if (search) {
-                whereClause[Op.or] = [
-                    { title: { [Op.iLike]: `%${search}%` } },
-                ];
+                whereClause.title = {
+                    [Op.iLike]: `%${search}%`
+                };
             }
-
             if (tpublicacion) {
                 whereClause.id_publication_type = tpublicacion;
             }
@@ -556,9 +555,9 @@ class PubControllers {
             }
 
             if (search && search != '') {
-                whereClause[Op.or] = [
-                    { title: { [Op.iLike]: `%${search}%` } },
-                ];
+                whereClause.title = {
+                    [Op.iLike]: `%${search}%`
+                };               
             }
             if (region && region != '0') {
                 whereClause.location = {
@@ -622,6 +621,13 @@ class PubControllers {
                             exclude: ['id_product']
                         }
                     }, {
+                        model: ProductRental,
+                        as: 'product_rental',
+                        attributes: {
+                            exclude: ['id_product']
+                        }
+                    },
+                     {
                         model: PublicationType,
                     }, {
                         model: Category,
