@@ -71,8 +71,7 @@ router.post('/register_account', async (req, res) => {
 
 router.post('/login_account', async (req, res) => {
     const response = newResponseJson();
-    let status = 200;
-    let flag = false;
+    let status = 200; 
     const userDataBody = req.body;
        // Verificar si los campos requeridos no están vacíos o nulos
        const requiredFields = ['email', 'password',];
@@ -270,24 +269,39 @@ router.patch('/changePassword', async (req, res) => {
     response.error = true;
 
     const { id_user } = req.query;
-    const {  password } = req.body; 
+    const {  password,old_password } = req.body; 
    
         const result = await new UserControllers().getUserByID(id_user); 
         if (result == null) {
             response.msg = 'Usuario no existe';
+            res.status(status).json(response); 
+            return
+        }  
+      
+        userData = await new UserControllers().validateCredencials(result.email?.toLowerCase(), old_password,1);  
+        if (userData.length == 0) {
+            status = 200;
+            response.msg = `Contraseña actual incorrecta.`;
+            res.status(status).json(response);
+            return; // Terminar la ejecución aquí
+        } 
+        if (old_password == password) {
+            status = 200;
+            response.msg = `La nueva contraseña, no puede ser igual a la anterior.`;
+            res.status(status).json(response);
+            return; // Terminar la ejecución aquí
+        } 
+        const result_act = await new UserControllers().updateUserPassword(password, result.email);
+        if (result_act == 1) {
+            response.error = false;
+            response.msg = 'Se actualizó la contraseña';
+            status = 200;
             res.status(status).json(response);
         } else {
-            const result_act = await new UserControllers().updateUserPassword(password, result.email);
-            if (result_act == 1) {
-                response.error = false;
-                response.msg = 'Se actualizó la contraseña';
-                status = 200;
-                res.status(status).json(response);
-            } else {
-                response.msg = 'Ocurrió un error actualizando';
-                res.status(status).json(response);
-            }
-        } 
+            response.msg = 'Ocurrió un error actualizando';
+            res.status(status).json(response);
+        }
+       
 });
 
 router.get('/activate_account', async (req, res) => {

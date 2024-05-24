@@ -4,9 +4,8 @@ const UserRoles = require('../models/UserRoles');
 const Roles = require('../models/Roles');
 const Profile = require('../models/Profile');
 const TypeUser = require('../models/TypeUser');
-const Products = require('../models/Products');
-const TypeDoc = require('../models/TypeDoc');
-
+const Products = require('../models/Products'); 
+const { Op } = require("sequelize");
 
 UserRoles.belongsTo(Users, { foreignKey: 'id_user' });
 Users.hasMany(UserRoles, { foreignKey: 'id_user' });
@@ -306,6 +305,9 @@ class UserControllers {
             const count = await Products.count({ //num de publicaciones del usuario
                 where: {
                   id_user: id_user,
+                  status_id: {
+                    [Op.ne]: 8 // Operador 'ne' significa 'not equal'
+                  }      
                 },
               });
 
