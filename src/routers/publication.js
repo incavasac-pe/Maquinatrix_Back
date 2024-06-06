@@ -13,9 +13,10 @@ router.get('/list_publications_panel', async (req, res) => {
         region = '',
         category = '',
         fcreacion = '',
+        id_user = '',
       } = req.query;
 
-    result = await new PubControllers().getPublicationsPanel(search, tpublicacion, category, fcreacion, region)
+    result = await new PubControllers().getPublicationsPanel(search, tpublicacion, category, fcreacion, region,id_user)
 
     if (result?.length > 0) {
         response.error = false;

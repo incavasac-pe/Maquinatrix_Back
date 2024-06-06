@@ -439,65 +439,87 @@ class PubControllers {
             console.log(error);
         }
     }
-
-    async getPublicationsPanel(search, tpublicacion, category, fcreacion, region) {
+    async getPublicationsPanel(search, tpublicacion, category, fcreacion, region, id_user) {
         try {
-            const whereClause = {
-                status_id: {
-                    [Op.ne]: 8
-                }
+            const whereClause1 = { 
+              };
+          const whereClause = {
+            status_id: {
+              [Op.ne]: 8
+            }
+          };
+      
+          if (search) {
+            whereClause.title = {
+              [Op.iLike]: `%${search}%`
             };
-
-            if (search) {
-                whereClause.title = {
-                    [Op.iLike]: `%${search}%`
-                };
-            }
-            if (region) {
-                whereClause.location = {
-                    [Op.iLike]: `%${region}%`
-                };
-            }
-            if (tpublicacion) {
-                whereClause['$PublicationType.id_publication_type$'] = tpublicacion;
-            }
-
-            if (category) {
-                whereClause['$Category.id_category$'] = category;
-            }
-
-            if (fcreacion) {
-                whereClause.create_at = fcreacion;
-            }
-
-            const results = await Products.findAll({
-                attributes: [
-                    'id_product',
-                    'title',
-                    'PublicationType.type_pub',
-                    'Category.category',
-                    [
-                        Products.sequelize.literal(`TO_CHAR(create_at, 'DD Mon YYYY, HH:MI am')`), 'create_at_formatted'
-                    ]
-                ],
+          }
+      
+          if (region) {
+            whereClause.location = {
+              [Op.iLike]: `%${region}%`
+            };
+          }
+      
+          if (tpublicacion) {
+            whereClause['PublicationType.id_publication_type'] = tpublicacion;
+          }
+      
+          if (category) {
+            whereClause['Category.id_category'] = category;
+          }
+      
+          if (fcreacion) {
+            whereClause.create_at = fcreacion;
+          }
+      
+          if (id_user!='') { 
+            whereClause1['id_user_ext'] = id_user;
+          }
+      
+          const results = await Products.findAll({
+            attributes: [
+              'id_product',
+              'title',
+              'PublicationType.type_pub',
+              'Category.category',
+              [
+                Products.sequelize.literal(`TO_CHAR(create_at, 'DD Mon YYYY, HH:MI am')`), 'create_at_formatted'
+              ]
+            ],
+            include: [
+              {
+                model: PublicationType,
+                attributes: ['type_pub'],
+                required: true
+              },
+              {
+                model: Category,
+                attributes: ['category'],
+                required: true
+              },
+              {
+                model: Users,
+                attributes: ['id_user', 'id_type_user'],
                 include: [
-                    {
-                        model: PublicationType,
-                        attributes: ['type_pub']
-                    }, {
-                        model: Category,
-                        attributes: ['category']
-                    }
+                  {
+                    model: Profile,
+                    attributes: ['full_name', 'last_name', 'razon_social', 'id_user_ext'],
+                    where: whereClause1,
+                  }
                 ],
-                where: whereClause,
-                order: [['id_product']]
-            });
-
-            return results;
+                required: true
+              }
+            ],
+            where: whereClause,
+            order: [['id_product']]
+          });
+      
+          return results;
         } catch (error) {
-            console.log(error);
+          console.log(error);
         }
-    }
+      }
 
 
     async getPublicationsPortalCount(search, tpublicacion, category, status_id, id_machine, id_product_type) {
