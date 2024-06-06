@@ -440,9 +440,7 @@ class PubControllers {
         }
     }
     async getPublicationsPanel(search, tpublicacion, category, fcreacion, region, id_user) {
-        try {
-            const whereClause1 = { 
-              };
+        try { 
           const whereClause = {
             status_id: {
               [Op.ne]: 8
@@ -462,20 +460,21 @@ class PubControllers {
           }
       
           if (tpublicacion) {
-            whereClause['PublicationType.id_publication_type'] = tpublicacion;
+            whereClause['id_publication_type'] = tpublicacion;
           }
       
           if (category) {
-            whereClause['Category.id_category'] = category;
+            whereClause['id_category'] = category;
           }
       
           if (fcreacion) {
             whereClause.create_at = fcreacion;
           }
       
-          if (id_user!='') { 
-            whereClause1['id_user_ext'] = id_user;
-          }
+          const userWhereClause = {};
+            if (id_user != undefined && id_user != '') {
+            userWhereClause['id_user_ext'] = id_user;
+            }
       
           const results = await Products.findAll({
             attributes: [
@@ -491,12 +490,10 @@ class PubControllers {
               {
                 model: PublicationType,
                 attributes: ['type_pub'],
-                required: true
               },
               {
                 model: Category,
                 attributes: ['category'],
-                required: true
               },
               {
                 model: Users,
@@ -505,7 +502,8 @@ class PubControllers {
                   {
                     model: Profile,
                     attributes: ['full_name', 'last_name', 'razon_social', 'id_user_ext'],
-                    where: whereClause1,
+                    where: Object.keys(userWhereClause).length > 0 ? userWhereClause : undefined,
+                    required: true
                   }
                 ],
                 required: true

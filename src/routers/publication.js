@@ -7,15 +7,14 @@ const { newResponseJson } = require('../responseUtils');
 router.get('/list_publications_panel', async (req, res) => {
     const response = newResponseJson();
     let status = 200;
-    const {
-        search = '',
-        tpublicacion = '',
-        region = '',
-        category = '',
-        fcreacion = '',
-        id_user = '',
-      } = req.query;
-
+    const search = req.query.search ?? '';
+    const tpublicacion = req.query ?. tpublicacion ?? '';
+    const region = req.query ?. region ?? '';
+    const category = req.query ?. category ?? '';
+    const fcreacion = req.query ?. fcreacion ?? ''; 
+    const id_user = req.query?.id_user; 
+    console.log("searchsearchsearchsearch",search)
+    console.log("id_userid_userid_userid_user",id_user)
     result = await new PubControllers().getPublicationsPanel(search, tpublicacion, category, fcreacion, region,id_user)
 
     if (result?.length > 0) {
@@ -347,26 +346,22 @@ router.get('/list_publications', async (req, res) => {
     const response = newResponseJson();
     let status = 200;
     
-    const {
-      search = '',
-      tpublicacion = '',
-      category = '',
-      limit = '',
-      price_max = '',
-      price_min = '',
-      region = '',
-      status_id = null,
-      brand = null,
-      model = null,
-      condition = null,
-      recent = null,
-      yearstart = null,
-      id_machine = null,
-      id_product_type = null,
-      typeodo = null,
-      valueodo = null,
-      offset = null,
-    } = req.query;
+    const search = req.query.search ?? '';
+    const tpublicacion = req.query ?. tpublicacion ?? '';
+    const category = req.query ?. category ?? '';
+    const limit = req.query ?. limit ?? '';
+    const price_max = req.query ?. price_max ?? '';
+    const price_min = req.query ?. price_min ?? '';
+    const region = req.query ?. region ?? '';
+    const status_id = req.query.status_id ?? null;
+    const brand = req.query ?. brand ?? null;
+    const model = req.query ?. model ?? null;
+    const condition = req.query ?. condition ?? null;
+    const recent = req.query ?. recent ?? null;
+    const yearstart =  req.query ?. yearstart ?? null;
+    const id_machine = req.query ?. id_machine ?? null;
+    const id_product_type = req.query ?. id_product_type ?? null; 
+    const offset = req.query ?. offset ?? null; 
     
     const count = await new PubControllers().getPublicationsPortalCount(search, tpublicacion, category, status_id, id_machine, id_product_type);
     
@@ -435,18 +430,16 @@ router.get('/list_publications', async (req, res) => {
 router.get('/list_publications_byuser', authenticateToken, async (req, res) => {
     const response = newResponseJson();
     let status = 200;
-    const {
-        search = '',
-        tpublicacion = '',
-        category = '',
-        limit = '',
-        price_max = '',
-        price_min = '',
-        region = '',
-        id_user = null,
-        status_id = null,
-        offset = 0,
-      } = req.query;
+    const search = req.query.search ?? '';
+    const tpublicacion = req.query ?. tpublicacion ?? '';
+    const category = req.query ?. category ?? '';
+    const limit = req.query ?. limit ?? '';
+    const price_max = req.query ?. price_max ?? '';
+    const price_min = req.query ?. price_min ?? '';
+    const region = req.query ?. region ?? '';
+    const id_user = req.query?.id_user ?? null;
+    const status_id = req.query.status_id ?? null;
+    const offset = req.query ?. offset ?? 0;  
 
     result = await new PubControllers().getPublicationsPortal(search, tpublicacion, category, limit, price_max, price_min, region, id_user, status_id, null, null, null, offset)
 
@@ -466,7 +459,9 @@ router.put('/visity_public', async (req, res) => {
     const response = newResponseJson();
     let status = 200;
 
-    const { id_product = null, type = null } = req.query;
+    const id_product = req.query.id_product ?? null;  
+    const type = req.query.type ?? null;  
+
     result = await new PubControllers().updatePublicationVisit(id_product, type)
     if (!result) {
         response.msg = 'No se encontraron publicaciones';
