@@ -362,6 +362,9 @@ router.get('/list_publications', async (req, res) => {
     const id_machine = req.query ?. id_machine ?? null;
     const id_product_type = req.query ?. id_product_type ?? null; 
     const offset = req.query ?. offset ?? null; 
+    const typeodo = req.query ?. typeodo ?? null; 
+    const valueodo = req.query ?. valueodo ?? null; 
+ 
     
     const count = await new PubControllers().getPublicationsPortalCount(search, tpublicacion, category, status_id, id_machine, id_product_type);
     
