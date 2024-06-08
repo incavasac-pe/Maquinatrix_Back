@@ -90,7 +90,7 @@ class PubControllers {
             console.log(error);
         }
     }
-    async updatePub(id_product, id_publication_type, id_category, id_product_type, id_machine, title, description) {
+    async updatePub(id_product, id_publication_type, id_category, id_product_type, id_machine, title, description,status_id) {
         try {
             const result = await Products.update(
                 {
@@ -99,7 +99,8 @@ class PubControllers {
                     id_product_type: id_product_type,
                     id_machine: id_machine,
                     title: title,
-                    description: description
+                    description: description,
+                    status_id: status_id
                 },
                 {
                     where: {
@@ -479,6 +480,7 @@ class PubControllers {
           const results = await Products.findAll({
             attributes: [
               'id_product',
+              'status_id',
               'title',
               'PublicationType.type_pub',
               'Category.category',
