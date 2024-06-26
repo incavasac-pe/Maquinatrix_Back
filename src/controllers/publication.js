@@ -923,8 +923,8 @@ class PubControllers {
             const existingImage = await ProductArchivos.findOne({ where: { path, id_product } });
             if (existingImage) {
                 const result = await ProductArchivos.update(
-                    { creation_date: new Date() },
-                    { where: { archivo_name, id_product } }
+                    { creation_date: new Date() ,archivo_name:archivo_name },
+                    { where: { path, id_product } }
                 );
 
                 return result;
