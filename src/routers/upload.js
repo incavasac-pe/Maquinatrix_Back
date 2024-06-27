@@ -145,10 +145,10 @@ router.get('/see_image', function (req, res) {
         // Si la imagen existe
         const existe = fs.existsSync(pathFoto);
         if (! existe) {
-            pathFoto = path.resolve(`${_dirname}/sin_producto.jpg`);
+            pathFoto = path.resolve(`${_dirname}/aaaaaa.png`);
         }
     } else {
-        pathFoto = path.resolve(`${_dirname}/sin_producto.jpg`);
+        pathFoto = path.resolve(`${_dirname}/aaaaaa.png`);
     } res.sendFile(pathFoto);
 });
 
