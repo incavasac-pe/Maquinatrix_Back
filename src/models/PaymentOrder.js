@@ -3,7 +3,7 @@
 const {DataTypes} = require('sequelize');
 const sequelize = require('../config/conexionDB');
 const Users = require('./User');
-const FlowStatus = require('../constants/flow_statuses');
+const FlowStatus = require('../constants/payment');
 
 const PaymentOrder = sequelize.define('PaymentOrder', {
 
