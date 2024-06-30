@@ -45,6 +45,20 @@ class FlowClient {
             return error;
         }
     }
+
+    async getRequest(endpoint, params) {
+
+        try {
+            const queryParams = new URLSearchParams(params).toString();
+            const fullUrl = `${this.url}/${endpoint}?${queryParams}`;
+            
+            const response = await axios.get(fullUrl);
+            return response.data;
+        } catch {
+            console.error('Error making request to Flow API:', error);
+            return error;
+        }
+    }
         
     async makeRequest(endpoint, params, method) {
         // Add API key to parameters
@@ -58,15 +72,20 @@ class FlowClient {
         console.log("signature", signature)
         
         // Construct the full URL
-        const url = `${this.url}/${endpoint}`;
-        
         if(method == 'POST'){
             return await this.postRequest(endpoint, params);
+        }
+        if(method == 'GET'){
+            return await this.getRequest(endpoint, params);
         }
     }
 
     async createPayment(params){ 
         return await this.makeRequest('payment/create', params, 'POST');
+    }
+
+    async getPaymentStatus(params){
+        return await this.makeRequest('payment/getStatus', params, 'GET');
     }
 }
 
