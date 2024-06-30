@@ -32,6 +32,16 @@ class PaymentController {
             throw error
         }
     }
+
+    async getPaymentOrder(params){
+        try {
+            return await PaymentOrder.findOne({
+                where: params
+            });
+        } catch (error) {
+            throw error
+        }
+    }
 }
 
 module.exports = PaymentController;
