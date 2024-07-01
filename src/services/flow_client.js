@@ -10,6 +10,9 @@ class FlowClient {
         this.apiKey = process.env.FLOW_API_KEY ? process.env.FLOW_API_KEY : '';
         this.secretKey = process.env.FLOW_API_SECRET ? process.env.FLOW_API_SECRET : '';
         this.url = process.env.FLOW_API_URL ? process.env.FLOW_API_URL : '';
+        this.confirmationUrl = process.env.FLOW_CONFIRMATION_URL ? process.env.FLOW_CONFIRMATION_URL : '';
+        this.returnUrl = process.env.FLOW_RETURN_URL ? process.env.FLOW_RETURN_URL : '';
+
     }
 
     // Method to create a signature
@@ -32,17 +35,14 @@ class FlowClient {
         }
         
         try {
-            // Make the request
             const response = await axios.post(url, form, {
                 headers: form.getHeaders()
             });
             
-            // Return the response data
             return response.data;
         } catch (error) {
-            // Handle error
             console.error('Error making request to Flow API:', error);
-            return error;
+            throw error;
         }
     }
 
@@ -80,7 +80,9 @@ class FlowClient {
         }
     }
 
-    async createPayment(params){ 
+    async createPayment(params){
+        params.urlConfirmation = this.confirmationUrl;
+        params.urlReturn = this.returnUrl;
         return await this.makeRequest('payment/create', params, 'POST');
     }
 

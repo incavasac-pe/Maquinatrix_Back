@@ -11,7 +11,7 @@ router.post('/payment', authenticateToken , async (req, res) => {
     console.log("user", req.user)
     const params = req.body;
 
-    const payment_oder = {
+    const paymentOderPayload = {
         id_user: req.user.id_user,
         payment_status: 1,
         currency: params.currency,
@@ -22,7 +22,7 @@ router.post('/payment', authenticateToken , async (req, res) => {
     }
 
     const paymentController = new PaymentController();
-    const paymentOrder = await paymentController.createPaymentOrder(payment_oder);
+    const paymentOrder = await paymentController.createPaymentOrder(paymentOderPayload);
 
     const purchase = {
         id_product: params.id_product,
