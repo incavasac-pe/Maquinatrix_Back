@@ -21,6 +21,7 @@ const routes = [
   require('./src/routers/catalogos'),
   require('./src/routers/upload'),
   require('./src/routers/location'),
+  require('./src/routers/payment'),
 ];
 
 for (const route of routes)  {
