@@ -12,9 +12,7 @@ router.get('/list_publications_panel', async (req, res) => {
     const region = req.query ?. region ?? '';
     const category = req.query ?. category ?? '';
     const fcreacion = req.query ?. fcreacion ?? ''; 
-    const id_user = req.query?.id_user; 
-    console.log("searchsearchsearchsearch",search)
-    console.log("id_userid_userid_userid_user",id_user)
+    const id_user = req.query?.id_user;  
     result = await new PubControllers().getPublicationsPanel(search, tpublicacion, category, fcreacion, region,id_user)
 
     if (result?.length > 0) {

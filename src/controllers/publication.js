@@ -484,9 +484,7 @@ class PubControllers {
               'title',
               'PublicationType.type_pub',
               'Category.category',
-              [
-                Products.sequelize.literal(`TO_CHAR(create_at, 'DD Mon YYYY, HH:MI am')`), 'create_at_formatted'
-              ]
+              'create_at'   
             ],
             include: [
               {
@@ -617,9 +615,8 @@ class PubControllers {
                     'visitt',
                     'interaction',
                     'location',
-                    [
-                        Products.sequelize.literal(`TO_CHAR(create_at, 'DD MM YYYY, HH:MI am')`), 'create_at_formatted'
-                    ],
+                    'create_at' 
+                    
                 ],
                 include: [
                     {
