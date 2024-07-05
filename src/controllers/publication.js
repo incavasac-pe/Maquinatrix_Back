@@ -654,7 +654,7 @@ class PubControllers {
                     }, {
                         model: ProductImages,
                         as: 'product_images',
-                        attributes: ['image_name','cover'],
+                        attributes: ['image_name','cover','path'],
                         order: [['path', 'ASC']],
                     },
                     {
@@ -671,7 +671,17 @@ class PubControllers {
                 order: orderClause,
                 limit: limit,
                 offset: offset
-            });
+            }); 
+                    results.forEach(product => {
+                        product.product_images = product.product_images.sort((a, b) => { 
+                            if (a.path && b.path) {
+                                return a.path.localeCompare(b.path);
+                            } else { 
+                                return 0;
+                            }
+                        });
+                    });
+            
             return results;
         } catch (error) {
             console.log(error);
@@ -725,14 +735,24 @@ class PubControllers {
                     {
                         model: ProductImages,
                         as: 'product_images',
-                        attributes: ['image_name'],
+                        attributes: ['image_name','cover','path'],
                         order: [['path', 'ASC']],
                     },
                 ],
                 order: [
                     ['id_product', 'ASC']
                 ]
+            }); 
+              results.forEach(product => {
+                product.product_images = product.product_images.sort((a, b) => { 
+                    if (a.path && b.path) {
+                        return b.path.localeCompare(a.path);
+                    } else { 
+                        return 0;
+                    }
+                }).reverse();
             });
+              
 
             return results;
         } catch (error) {
@@ -746,10 +766,10 @@ class PubControllers {
                 where: {
                     id_product: id
                 },
-                attributes: ['image_name', 'cover'],
+                attributes: ['image_name','cover','path'],
                 order: [['path', 'ASC']]
             });
-
+              
             return results;
         } catch (error) {
             console.log(error);
