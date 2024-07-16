@@ -18,11 +18,11 @@ const Profile = sequelize.define('Profile', {
     },
     full_name: {
         type: DataTypes.STRING(100),
-        allowNull: false
+        allowNull: true
     }, 
     last_name: {
         type: DataTypes.STRING(150),
-        allowNull: false
+        allowNull: true
     },   
     id_type_doc:  {
         type: DataTypes.INTEGER,
@@ -30,18 +30,18 @@ const Profile = sequelize.define('Profile', {
     },
     num_doc:{
         type: DataTypes.STRING(15),
-        allowNull: false
+        allowNull: true
     },
     address:{
         type: DataTypes.STRING(255),
-        allowNull: false
+        allowNull: true
     },
     razon_social:{
-        type: DataTypes.STRING(15),
+        type: DataTypes.STRING(100),
         allowNull: true
     },
     rutCompany:{
-        type: DataTypes.STRING(15),
+        type: DataTypes.STRING(20),
         allowNull: true
     },
     photo: {
@@ -63,12 +63,15 @@ const Profile = sequelize.define('Profile', {
     emailRepreLegal:{
         type: DataTypes.STRING(255),
         allowNull: true, 
-    }
+    },
+    id_user_ext: {
+        type: DataTypes.STRING(9),
+        allowNull: true,
+      },
 }, {
     tableName: 'profile',
     timestamps: false
 });
 Profile.belongsTo(TypeDoc, {foreignKey: 'id_type_doc'})
-Profile.belongsTo(Users, {foreignKey: 'id_user'});
-
+Profile.belongsTo(Users, {foreignKey: 'id_user'}); 
 module.exports = Profile;

@@ -32,5 +32,5 @@ Category.belongsTo(Status, {
     foreignKey: 'status_id',
     targetKey: 'id_status'
 });
-
+Category.belongsTo(Status, {foreignKey: 'status_id'});  
 module.exports = Category;

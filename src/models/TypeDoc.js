@@ -29,5 +29,5 @@ TypeDoc.belongsTo(Status, {
     foreignKey: 'status_id',
     targetKey: 'id_status'
 });
-
+TypeDoc.belongsTo(Status, {foreignKey: 'status_id'});  
 module.exports = TypeDoc;

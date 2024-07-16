@@ -15,57 +15,86 @@ const ProductDetails = sequelize.define('ProductDetails', {
         type: DataTypes.INTEGER,
         allowNull: true
     },
+    region: {
+        type: DataTypes.STRING(50),
+        allowNull: true
+    },
+    city: {
+        type: DataTypes.STRING(100),
+        allowNull: true
+    },
     price: {
         type: DataTypes.STRING(50),
-        allowNull: false
+        allowNull: true
     },
-    brand: {
+    brand: { //marca
         type: DataTypes.STRING(255),
-        allowNull: false
+        allowNull: true
     },
-    model: {
+    model: { //modelo
         type: DataTypes.STRING(255),
-        allowNull: false
+        allowNull: true
     },
-    year: {
+    year: { //año
         type: DataTypes.STRING(10),
-        allowNull: false
+        allowNull: true
     },
-    condition: {
+    factory_code: { //codigo de fabrica
         type: DataTypes.STRING(50),
-        allowNull: false
+        allowNull: true
     },
     mileage: {
-        type: DataTypes.STRING(10),
-        allowNull: false
-    },
-    engine_number: {
         type: DataTypes.STRING(50),
-        allowNull: false
+        allowNull: true
     },
-    warranty: {
+    engine_number: { //numero de motor
         type: DataTypes.STRING(50),
-        allowNull: false
+        allowNull: true
     },
-    owner: {
+    chasis_number: {//numero chasis
         type: DataTypes.STRING(50),
-        allowNull: false
+        allowNull: true
     },
-    delivery: {
+    patent:{ //patente
+        type: DataTypes.STRING(50),
+        allowNull: true
+    },
+    warranty: {  //grantia
+        type: DataTypes.STRING(50),
+        allowNull: true
+    },
+    condition: { //condicion nuevo o usado
+        type: DataTypes.STRING(50),
+        allowNull: true
+    },
+    owner: { //dueño
+        type: DataTypes.STRING(50),
+        allowNull: true
+    },
+    delivery: { //despacho
         type: DataTypes.CHAR(1),
-        allowNull: false
+        allowNull: true
     },
-    pay_now_delivery: {
+    pay_now_delivery: {  
         type: DataTypes.CHAR(1),
-        allowNull: false
+        allowNull: true
     },
     facipay: {
         type: DataTypes.CHAR(1),
-        allowNull: false
+        allowNull: true
     },
      contact_me: {
         type: DataTypes.TEXT,
         allowNull: true
+    },
+    id_marca: {
+        type: DataTypes.INTEGER,
+        allowNull: true
+    },
+    id_model: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+        default:1
     },
 }, {
     tableName: 'product_details',

@@ -34,4 +34,36 @@ const RegionesChile = Object.freeze({
 
     res.status(status).json(response);
 });
+
+
+
+router.get('/list_city', async (req, res) => {
+     
+  const response = newResponseJson();
+  let status = 200; 
+  const region = req.query.region;
+       
+    try {
+      const resp = await axios.get(`https://restcountries.com/v3.1/region/${region}`);
+      const data = resp.data;
+
+      // Filtrar las ciudades de Chile
+      const chile = data.filter(country => country.name.common === 'Chile'); 
+
+      const cities = chile[0].altSpellings.slice(2); // Ignorar los alias iniciales
+      response.count = cities.length;
+      response.data = cities; 
+      
+      response.error = false;
+      response.msg = 'Regiones';
+    
+      } catch (error) {
+        console.error('Error al obtener las ciudades:', error.message);
+        response.error = true;
+        status = 400; 
+        response.msg = 'Error al obtener las ciudades:', error.message
+      }
+   
+     res.status(status).json(response);
+  });
 module.exports = router;

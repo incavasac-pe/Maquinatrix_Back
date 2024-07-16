@@ -3,18 +3,19 @@
 const {DataTypes} = require('sequelize');
 const sequelize = require('../config/conexionDB');
 const Status = require('./Status');
+const ProductType = require('./ProductType');
 
-const PublicationType = sequelize.define('PublicationType', {
-    id_publication_type: {
+const ModelType = sequelize.define('ModelType', {
+    id_model: {
         type: DataTypes.INTEGER,
         allowNull: false,
         primaryKey: true,
         autoIncrement: true
     },
-    type_pub: {
-        type: DataTypes.STRING(255),
-        allowNull: false
-    },
+    id_product_type: {
+        type: DataTypes.INTEGER,
+        allowNull: false,  
+    },   
     description: {
         type: DataTypes.TEXT,
         allowNull: true
@@ -24,13 +25,14 @@ const PublicationType = sequelize.define('PublicationType', {
         allowNull: false
     }
 }, {
-    tableName: 'publication_type',
+    tableName: 'model_type',
     timestamps: false
 });
 
-PublicationType.belongsTo(Status, {
+ModelType.belongsTo(Status, {
     foreignKey: 'status_id',
     targetKey: 'id_status'
 });
-PublicationType.belongsTo(Status, {foreignKey: 'status_id'});  
-module.exports = PublicationType;
+ModelType.belongsTo(Status, {foreignKey: 'status_id'});
+ModelType.belongsTo(ProductType, {foreignKey: 'id_product_type'}); 
+module.exports = ModelType;
